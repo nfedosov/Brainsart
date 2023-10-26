@@ -1,0 +1,30 @@
+classdef KalmanSimple
+   properties
+      x (2,1) {mustBeNumeric}
+      B (2,2) {mustBeNumeric}
+      H (1,2) {mustBeNumeric}
+   end
+   methods
+      function filtered = roundOff(obj)
+         r = obj.x;
+         
+      end
+     
+      function step(obj, y) 
+           obj.x_ = obj.Phi@obj.x
+        
+        obj.P_ = obj.Phi@obj.P@obj.Phi.T+obj.Q
+        
+        obj.res = y-obj.H@obj.x_
+        
+        obj.S = obj.H@obj.P_@.H.T+self.R
+        
+        self.K = self.P_@self.H.T/self.S
+        
+        self.x = self.x_+self.K@self.res
+        
+        self.P = (np.eye(2)-self.K@self.H)@self.P_
+          
+      end
+   end
+end

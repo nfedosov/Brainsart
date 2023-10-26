@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-b16f3bde0deb76120cde.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "liblsl",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "lsl::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lsl-Debug-a0b79bb56c721cc897e8.json",
+					"name" : "lsl",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "lslobj::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lslobj-Debug-c71e726c88e91cad5cb0.json",
+					"name" : "lslobj",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "lslver::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lslver-Debug-4927079f81fa758d29c6.json",
+					"name" : "lslver",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/build-liblsl-master-Desktop_Qt_6_4_2_MinGW_64_bit-Debug",
+		"source" : "C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/liblsl-master"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}
