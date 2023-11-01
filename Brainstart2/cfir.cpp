@@ -3,9 +3,11 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#define _USE_MATH_DEFINES
+#include "math.h"
 #include "utils.h"
 
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
+#include "./eigen-3.4.0/Eigen/Dense"
 
 
 

@@ -48,7 +48,7 @@ void SaveData::saveToFif(Eigen::MatrixXd& data)
 
     info.sfreq = 500.0;
     info.nchan = 5;
-    info.chs.resize(info.nchan);
+    info.chs.reserve(info.nchan);
     info.ch_names << "CH1" << "CH2" << "CH3" << "CH4" << "CH5";
 
 

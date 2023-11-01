@@ -40,10 +40,13 @@ public:
 
     //WhiteKF kf(?????/);
 
-
+    void SetConfigurationFileName(char* szConfigFileName);
 
 
 private slots:
+
+    
+
     void ondemoButtonclicked();
     void onsetKalmanButtonclicked();
     //void handleButtonGroupKCClick(int);
@@ -62,22 +65,14 @@ private slots:
 
 
 private:
+    string paramsFileName;
     QPushButton *demoButton;
     QPushButton *setKalmanManual;
     QPushButton *findStreams;
     QLineEdit *lineEdit1;
     QLineEdit *lineEdit2;
-    //QCheckBox *envelopeFB; REDO INTO QCHECKOX
-    //QCheckBox *phaseFB;
-    //QRadioButton *envelopeFBButton;
-    //QRadioButton *phaseFBButton;
-    //QButtonGroup* buttonGroupEP;
 
-    //QRadioButton *useKFButton;
-    //QRadioButton *useCFIRButton;
-
-    //QButtonGroup* buttonGroupKC;
-    QPushButton* load_params_button;
+    //QPushButton* load_params_button;
 
 
     QListWidget* streamListWidget;
@@ -89,6 +84,8 @@ private:
 
     //QPushButton *demoButton;
     Ui::MainWindow *ui;
+
+    void LoadParameters();
 
 };
 #endif // MAINWINDOW_H

@@ -1,5 +1,5 @@
 #include "simplebarfbwin.h"
-#include "qpainter.h"
+#include <qpainter.h>
 
 SimpleBarFBWin::SimpleBarFBWin(QWidget *parent)
     : QWidget{parent}

@@ -1,7 +1,8 @@
 #include <complex>
-#include <cmath>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
+#include "./eigen-3.4.0/Eigen/Dense"
 
 using namespace Eigen;
 using namespace std;
@@ -38,7 +39,7 @@ Eigen::VectorXcd hilbert(const Eigen::VectorXd& x, int N = -1) {
     MatrixXcd dft(N, N);
     for (int k = 0; k < N; k++) {
       for (int n = 0; n < N; n++) {
-        complex<double> arg = -(2.0 * M_PI * 1i * complex<double>(k * n)) / complex<double>(N);
+        complex<double> arg = -(complex<double>(2.0 * M_PI * 1i) * complex<double>(k * n)) / complex<double>(N);
         dft(k,n) = exp(arg);
       }
     }

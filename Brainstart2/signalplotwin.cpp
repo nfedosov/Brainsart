@@ -313,7 +313,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
 
 
 
-    for (int i = 0; i < Nch; i++) {
+    for (uint i = 0; i < Nch; i++) {
 
         //data[i].resize(1000000);
         //data[i].fill(0.0);
@@ -394,7 +394,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
 
 
     lsl::xml_element channel = channels.child("channel");
-    for (int i = 0; i < Nch; i++) {
+    for (uint i = 0; i < Nch; i++) {
 
         chNames[i] = new QCPItemText(plot);
 
@@ -489,7 +489,7 @@ void SignalPlotWin::updGraphs()
 
     if (!isShowProcessed)
     {
-        for (int i = 0; i < Nch; i++)
+        for (uint i = 0; i < Nch; i++)
         {
             for (int j = 0; j <n_samples_in_chunk; j++)
             {
@@ -535,7 +535,7 @@ void SignalPlotWin::updGraphs()
 
     if (isRecorded)
     {
-        for (int i = 0; i < Nch; i++)
+        for (uint i = 0; i < Nch; i++)
         {
             for (int j = 0; j <n_samples_in_chunk; j++)
             {

@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 
-#include "./ui_mainwindow.h"
-#include<QDebug>
-#include<QtGlobal>
+#include "..\build-Brainstart2-Desktop_Qt_5_12_12_MinGW_32_bit-Debug/ui_mainwindow.h"
+#include <QDebug>
+#include <QtGlobal>
 #include <iostream>
 #include <fstream> // Include the <fstream> header
 #include <sstream>
@@ -17,8 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-
-
+   
     ui->setupUi(this);
 
     this->setFixedSize(800,500);
@@ -107,10 +106,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     vLayout->addLayout(hLayout_1);
 
-    load_params_button = new QPushButton("Load parameteres", this);
+    //load_params_button = new QPushButton("Load parameteres", this);
 
     vLayout->addStretch(1);
-    vLayout->addWidget(load_params_button);
+    //vLayout->addWidget(load_params_button);
     vLayout->addWidget(lineEdit1);
     vLayout->addWidget(lineEdit2);
 
@@ -143,15 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(streamListWidget, &QListWidget::itemClicked, this, &MainWindow::handleStreamSelected);
 
 
-    connect(load_params_button, &QPushButton::clicked, this, &MainWindow::onLoadParams);
-    //connect(useCFIRButton, &QRadioButton::clicked, this, &MainWindow::onusecfirButtonClicked);
-
-
-    //connect(buttonGroupKC, &QButtonGroup::buttonToggled,
-    //    this, &MainWindow::handleButtonGroupKCClick);
-    //connect(buttonGroupKC, QOverload<int>::of(&QButtonGroup::buttonClicked), this, &MainWindow::handleButtonGroupKCClick);
-    //connect(buttonGroupKC, &QButtonGroup::idClicked, this, &MainWindow::handleButtonGroupKCClick);
-
+    // connect(load_params_button, &QPushButton::clicked, this, &MainWindow::onLoadParams);
 }
 
 
@@ -204,9 +195,16 @@ void MainWindow::handleStreamSelected()
         datareceiver->databuffer[i].fill(0.0);
     }
 
+    // NEW:
+    LoadParameters();
 }
 
 
+
+void MainWindow::SetConfigurationFileName(char* szConfigFileName)
+{
+    paramsFileName.assign(szConfigFileName);
+}
 
 void MainWindow::onsetKalmanButtonclicked()
 {
@@ -251,15 +249,12 @@ void MainWindow::onLoadParams()
 {
 
     std::vector<double> values;
-    std::string filename = "C:/Users/Fedosov/Documents/projects/brainstart2/results/params.txt";
-
-
-    std::ifstream file(filename);
+    std::ifstream file(this->paramsFileName);
 
         // Check if the file is open
         if (!file.is_open()) {
-            std::cerr << "Failed to open the file: " << filename << std::endl;
-
+            std::cerr << "Failed to open the file: " << this->paramsFileName << std::endl;
+            return;
         }
 
         std::string line;
@@ -343,5 +338,57 @@ void MainWindow::onQ1changed()
         datareceiver->q1 = this->base_q1 + thr*0.01*this->base_q1;
     }
 
+}
+
+void MainWindow::LoadParameters()
+{
+    std::vector<double> values;
+    std::ifstream file(this->paramsFileName);
+
+    // Check if the file is open
+    if (!file.is_open()) {
+        std::cerr << "Failed to open the file: " << this->paramsFileName << std::endl;
+        return;
+    }
+
+    std::string line;
+    values.clear();
+
+    // Read a line from the file
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        double value;
+        while (ss >> value) {
+            values.push_back(value);
+            // Check if the next character is a comma and skip it
+            if (ss.peek() == ',') {
+                ss.ignore();
+            }
+        }
+
+    }
+
+    qDebug() << values[0];
+    qDebug() << values[1];
+    qDebug() << values[2];
+    qDebug() << values[3];
+    qDebug() << values[4];
+    qDebug() << values[5];
+    qDebug() << values[6];
+
+    datareceiver->q0 = values[1];
+    datareceiver->q1 = values[2];
+
+    this->base_q0 = values[1];
+    this->base_q1 = values[2];
+
+    datareceiver->spat_filter[0] = values[3];
+    datareceiver->spat_filter[1] = values[4];
+    datareceiver->spat_filter[2] = values[5];
+    datareceiver->spat_filter[3] = values[6];
+
+
+    // Close the file
+    file.close();
 }
 

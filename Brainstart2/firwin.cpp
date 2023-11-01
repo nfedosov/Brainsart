@@ -1,12 +1,13 @@
 #include "firwin.h"
+#include "qmath.h"
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <string>
 #include <vector>
 
 
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/unsupported/Eigen/FFT>
-
+#include "./eigen-3.4.0/Eigen/Dense"
+#include "./eigen-3.4.0/unsupported/Eigen/FFT"
 
 
 using namespace std;

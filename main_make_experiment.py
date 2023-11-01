@@ -420,42 +420,22 @@ class ProtocolEditor(QtWidgets.QWidget):
             
             
         self.layout.insertWidget(N_pos, widget)    
-        self.protocol_blocks.insert(N_pos,widget.block)
-        #if self.blayout.count()>(N_pos-2):
-        #self.layout.insertWidget(N_pos, widget)
-        
-        #if ???
-        #popped = self.protocol_blocks.pop(widget.position)
-        #self.protocol_blocks.insert(N_pos,popped)
-        #self.reassign_positions(N_pos)
-        
+        self.protocol_blocks.insert(N_pos,widget.block)        
         
         copy_object = DragItem()
         copy_object.set_data(widget.name)
         copy_object.position = widget.position
-        #self.drag_objects.append(new_object)
+        
         copy_object.parent_ref = widget.parent_ref
         copy_object.block = widget.block
-        widget.parent_ref.blayout.insertWidget(copy_object.position, copy_object)#addWidget(new_object)
+        widget.parent_ref.blayout.insertWidget(copy_object.position, copy_object)
         
-        #else:
-        #    self.blayout.insertWidget(N_pos-1, widget)
-            
-        #self.orderChanged.emit(self.get_item_data())
-       
-    
         e.accept()
         
         for block in self.protocol_blocks:
             print(block.name)
             
- 
-            
-            
-            
-            
-            
-       
+        
 
 class DragItem(QLabel):
     def __init__(self, *args, **kwargs):
@@ -465,15 +445,8 @@ class DragItem(QLabel):
         self.setStyleSheet("border: 1px solid black; background-color: white")
         # Store data separately from display label, but use label for default.
         self.data = self.text()
-        
-        #palette =self.palette()
-        #palette.setColor(self.backgroundRole(), QtCore.Qt.darkGreen)
-        
-        
-        self.selected = False
-        
-        self.position = None
-        
+        self.selected = False        
+        self.position = None        
         self.block = None
 
     def set_data(self, data):
@@ -639,14 +612,9 @@ class DragWidget(QWidget):
             
          
     def update_block_list(self,block):
-        #self.block_list_widget.clear()
-        #for block in self.protocol_blocks:
         item = DragItem()
         item.set_data(block.name)
-        item.position = 0#QtWidgets.QListWidgetItem(block.name)
-            #item.setData(QtCore.Qt.UserRole, block)
-            #self.blayout.addWidget(item)
-            #self.block_list_widget.addItem(item)
+        item.position = 0
             
         item.block = block
         self.add_item(item)
@@ -667,7 +635,7 @@ class DragWidget(QWidget):
             #self.message = message
             #self.code = code
             list_to_save = self.protocol_blocks
-
+vyt
             # Save the data to the selected file
             with open(file_path, "wb") as file:
                 #file.write(data_to_save)

@@ -11,11 +11,11 @@ static char _rcsId[] = "$Header: //Aristotle/emseproject/src/emse52/alglib/rcs/i
 
 // Include directives
 //#include	"stdafx.h"
-#include	<ica.h>
+#include	"ica.h"
 
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
+#include "./eigen-3.4.0/Eigen/Dense"
 
-using namespace Eigen;;
+using namespace Eigen;
 
 //#include	<em_except.h>
 

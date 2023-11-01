@@ -1359,12 +1359,15 @@ class RawVisWin(QWidget):
         low_freq_label = QLabel('Low frequency filter for vizualization')
         self.layout.addWidget(low_freq_label)
         self.low_freq_input = QLineEdit()
-        
+
+        # TODO: добавить значения по умолчанию
+        self.layout.addWidget(self.low_freq_input)
+
         high_freq_label = QLabel('High frequency filter for vizualization')
         self.layout.addWidget(high_freq_label)
-        self.high_freq_input = QLineEdit()
+        self.high_freq_input = QLineEdit()       
         
-        self.layout.addWidget(self.low_freq_input)
+        # TODO: добавить значения по умолчанию
         self.layout.addWidget(self.high_freq_input)
         
         self.setLayout(self.layout)

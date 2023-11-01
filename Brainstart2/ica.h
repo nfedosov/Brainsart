@@ -23,7 +23,7 @@
 //#include	<ecBase.h>
 //#include	<Vectools.h>
 
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
+#include "./eigen-3.4.0/Eigen/Dense"
 
 using namespace Eigen;;
 
