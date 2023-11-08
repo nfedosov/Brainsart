@@ -1,33 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AlphaTraining
 {
     internal class BaselineRecorder : PipelineItem
     {
-        string _scenarioFilename;
 
         string _recordingFilename;
 
-        public BaselineRecorder(string name) 
-            : base(name) 
+        public BaselineRecorder(MainWindow mainWindow, string name) 
+            : base(mainWindow, name) 
         { 
         
         }
 
+        public override bool CanMoveForward()
+        {
+            return true;
+        }
+
         public override string GetArguments()
         {
-            return @"c:\Users\elena\Documents\HSE\Neurofeedback\brainstart2\brainstart2\Brainsart\Brainstart2\AlphaTraining\bin\Debug\net6.0-windows\Data\users\1\baseline_experiment_10-18_21-32-39\data.pickle"
-                + @" c:\Users\elena\Documents\HSE\Neurofeedback\brainstart2\brainstart2\Brainsart\Brainstart2\AlphaTraining\bin\Debug\net6.0-windows\Data\users\1\config.txt";
+            return _recordingFilename;
         }
 
         public override bool Run(string argument)
         {
-            base.Run(argument);
-            return false;
+            // в качестве аргумента пришел
+            string scenario = argument;
+
+            // сгенерировать имя выходного файла, который будет содержать baseline
+            _recordingFilename = Path.GetFullPath(
+                String.Format(@"./Data/users/{0}/baseline_{1}.pickle", _mainWindow.GetUserName(), DateTime.Now.Ticks));
+            
+            using (StreamReader sr = new StreamReader(File.OpenRead(scenario)))
+            {
+                List<ProtocolBlock> blocks = JsonSerializer.Deserialize<List<ProtocolBlock>>(sr.ReadToEnd());
+
+                if (null != blocks)
+                {
+                    // Запустить Python-скрипт, который запустит запись согласно меткам в протоколе
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = @"c:\Users\elena\anaconda3\Python.exe";
+                    startInfo.Arguments = @"./Data/scripts/record_baseline.py " + scenario + " " + _recordingFilename;
+                    startInfo.UseShellExecute = false;
+                    startInfo.CreateNoWindow = true;
+                    var process = Process.Start(startInfo);
+                    if (null != process)
+                    {
+                        BaselineRecording baselineRecording = new BaselineRecording();
+                        baselineRecording.PlayScenario(blocks);
+                        baselineRecording.ShowDialog();
+                                                
+                        // Ждем, когда скрипт отработает
+                        process.WaitForExit();
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

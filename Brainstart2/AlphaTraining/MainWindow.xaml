@@ -62,8 +62,8 @@
                                     <RowDefinition Height="30"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 
-                                 <GroupBox Grid.Row="0" Header="Сценарии записи baseline">
-                                    <ListBox Name="lbScenarios"></ListBox>
+                                 <GroupBox Grid.Row="0" Header="Сценарии записи baseline" FontSize="16">
+                                    <ListBox Name="lbScenarios" SelectionChanged="lbScenarios_SelectionChanged"></ListBox>
                                  </GroupBox>
                                 
                                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -72,6 +72,16 @@
                                 </StackPanel>
                             </Grid>                            
                             <GridSplitter Grid.Column="1" Width="3"></GridSplitter>
+                            <ListBox Grid.Column="2" Name="lbProtocolDetails">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel HorizontalAlignment="Center">
+                                        <Label BorderThickness="1" Content="{Binding Description}" HorizontalAlignment="Center"></Label>
+                                            
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -80,7 +90,7 @@
                         <Image Height="20" Width="20" Source="c:\Users\elena\Documents\HSE\Neurofeedback\brainstart2\brainstart2\Brainsart\Brainstart2\AlphaTraining\bin\Debug\net6.0-windows\arrow_yellow.png"/>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <TextBlock Text="+" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Name ="tbProtocolScreen" Text="+" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                     </TabItem.Content>
                 </TabItem>
                 <TabItem Name="tab3" Background="White"  Width="80">
@@ -99,13 +109,13 @@
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Orientation="Vertical">
-                                <GroupBox Header="Режим тренинга" Margin="0, 0, 0, 5">
+                                <GroupBox Header="Режим тренинга" Margin="0, 0, 0, 5" FontSize="16">
                                     <StackPanel Orientation="Vertical">
                                         <RadioButton IsChecked="True">Концентрация</RadioButton>
                                         <RadioButton>Релаксация</RadioButton>
                                     </StackPanel>
                                 </GroupBox>
-                                <GroupBox Header="Режим визуализации">
+                                <GroupBox Header="Режим визуализации" FontSize="16">
                                     <StackPanel Orientation="Vertical">
                                         <RadioButton IsChecked="True">Реактивный пингвин</RadioButton>
                                         <RadioButton>Что-то ещё</RadioButton>

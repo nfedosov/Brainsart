@@ -1,0 +1,26 @@
+﻿<Window x:Class="AlphaTraining.OptionSelectorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AlphaTraining"
+        mc:Ignorable="d"
+        Title="Alpha Training" Height="475" Width="385" MaxHeight="475" MaxWidth="385" MinHeight="475" MinWidth="385"
+        Background="DarkGray">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="250"></RowDefinition>
+            <RowDefinition Height="155*"></RowDefinition>
+            <RowDefinition Height="54*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Image Grid.Row="0" Source="c:\\Users\\elena\\Documents\\HSE\\Neurofeedback\\brainstart2\\brainstart2\Brainsart\\Brainstart2\\AlphaTraining\\bin\\Debug\\net6.0-windows\\Data\\icons\\noroot.png"/>
+
+        <ListBox  Grid.Row="1" Name ="lbUsersList" Background="LightGray" Margin="5,5,5,5" MouseDoubleClick="lbUsersList_MouseDoubleClick">
+
+        </ListBox>
+
+        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,0,0,0" Grid.RowSpan="2">
+            <Button Name ="btnAnalysis" Content="Продолжить" Margin="15, 5, 15, 0" Height="35" FontSize="16" Click="btnAnalysis_Click"></Button>
+        </StackPanel>
+    </Grid>
+</Window>

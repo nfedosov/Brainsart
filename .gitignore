@@ -1,0 +1,12 @@
+*.ipch
+*.obj
+*.db
+*.pyc
+*.vsidx
+*.v2
+*.bin
+bin/
+obj/
+Debug/
+release/
+results/

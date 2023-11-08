@@ -1,3 +1,4 @@
+import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QHBoxLayout,\
     QVBoxLayout, QWidget, QLabel, QListWidget, QListWidgetItem,\
         QFileDialog, QComboBox
@@ -14,7 +15,8 @@ import os
 from lsl_inlet import LSLInlet
 import pylsl
 
-
+# new:
+import json
 
 
 class ProtocolBlock:
@@ -23,54 +25,6 @@ class ProtocolBlock:
         self.duration = duration
         self.message = message
         self.code = code
-
-'''
-class ProtocolBlock(QtWidgets.QWidget):
-    def __init__(self, name, duration, message, code, parent=None):
-        super().__init__(parent)
-        self.name = name
-        self.duration = duration
-        self.message = message
-        self.code = code
-        self.setup_ui()
-
-    def setup_ui(self):
-        layout = QtWidgets.QVBoxLayout()
-        name_label = QtWidgets.QLabel(f"Name: {self.name}")
-        duration_label = QtWidgets.QLabel(f"Duration: {self.duration} s")
-        message_label = QtWidgets.QLabel(f"Message: {self.message}")
-        code_label = QtWidgets.QLabel(f"Code: {self.code}")
-        layout.addWidget(name_label)
-        layout.addWidget(duration_label)
-        layout.addWidget(message_label)
-        layout.addWidget(code_label)
-        self.setLayout(layout)
-        
-        
-    def mousePressEvent(self, e):
-        if e.button() == Qt.LeftButton:
-            drag = QDrag(self)
-            mime = QMimeData()
-            drag.setMimeData(mime)
-
-            pixmap = QPixmap(self.size())
-            self.render(pixmap)
-            drag.setPixmap(pixmap)
-
-            drag.exec_(Qt.CopyAction)
-       
-'''
-'''    
-    def mouseMoveEvent(self, event):
-
-
-       drag = QDrag(self)
-       mime = QMimeData()
-       drag.setMimeData(mime)
-     
-
-       drag.exec_(Qt.CopyAction)'''
-
 
 
 class BlockDialog(QtWidgets.QDialog):
@@ -197,41 +151,29 @@ class ProtocolEditor(QtWidgets.QWidget):
 
     def onStartButtonClicked(self):
         
-        self.stim_label = QLabel('+')
-        
-        self.stim_label.setFixedSize(1000, 700)
-        
-        self.stim_label.setAlignment(Qt.AlignCenter)
-        
+        self.stim_label = QLabel('+')        
+        self.stim_label.setFixedSize(1000, 700)        
+        self.stim_label.setAlignment(Qt.AlignCenter)        
         font = QFont( "Gost", 50)# QFont.Bold)
         self.stim_label.setFont(font)
-        
-        
         self.stim_label.show()
         
-        
-        
-        
-        
+        # сформировать словирь блоков из созданной последовательности блоков        
         blocks = dict()
         for i in range(len(self.protocol_blocks)):
             if self.protocol_blocks[i].name not in blocks:
                 blocks[self.protocol_blocks[i].name] = {'duration': self.protocol_blocks[i].duration, 'id': self.protocol_blocks[i].code, 'message': self.protocol_blocks[i].message}
         
-        
+        # список меток?
         seq2 = list()
         for i in range(len(self.protocol_blocks)):
             seq2.append(self.protocol_blocks[i].name)
             
-        
-        
-        
+        # сформировать имя результирующего файла
         timestamp_str = datetime.strftime(datetime.now(), '%m-%d_%H-%M-%S')
         results_path = 'results/{}_{}/'.format('baseline_experiment', timestamp_str)
-        
-        
-        
-        
+            
+        # подготовить настройки приемника lsl-канала
         exp_settings = {
                     'exp_name': 'Baseline',
                     'lsl_stream_name': self.inlet_info.name(),
@@ -250,10 +192,6 @@ class ProtocolEditor(QtWidgets.QWidget):
                     #'channels_subset': 'P3-A1',
                     #'bands': [[9.0, 13.0],[18.0,25.0]],
                     'results_path': results_path}
-        
-        
-        
-        
         
         inlet = LSLInlet(exp_settings)#LSLInlet(exp_settings)
         inlet.srate = inlet.get_frequency()
@@ -290,6 +228,8 @@ class ProtocolEditor(QtWidgets.QWidget):
         block_idx = 0
         block_name = exp_settings['sequence'][0]
         current_block = exp_settings['blocks'][block_name]
+
+        # посчитать количество отсчетов с учтом частоты
         n_samples = srate * current_block['duration']
         block_id = current_block['id']
         
@@ -300,6 +240,8 @@ class ProtocolEditor(QtWidgets.QWidget):
     
         
         while (1):
+
+            # как только получли нужно количество отсчетов, переходим к следующему шагу
             if n_samples_received_in_block >= n_samples:
                 dif =  n_samples_received_in_block - n_samples
                 
@@ -327,19 +269,26 @@ class ProtocolEditor(QtWidgets.QWidget):
                 QCoreApplication.processEvents()
             
         
-        
+            # получить очередной чанк из lsl-канала
             chunk, t_stamp = inlet.get_next_chunk()
             # print(f"{chunk=}")
             if chunk is not None:
                 n_samples_in_chunk = len(chunk)
+
+                # сохранить полученные отсчеты в буфер
                 data[n_samples_received:n_samples_received + n_samples_in_chunk, :] = chunk
+
+                # пометить полученные отсчеты идентификатором текущего блока
                 stims[n_samples_received:n_samples_received + n_samples_in_chunk] = block_id
+
+                # просуммировать количество полученных отсчетов в рамках блока
                 n_samples_received_in_block += n_samples_in_chunk
+
+                # просуммировать общее количество полученных отсчетов
                 n_samples_received += n_samples_in_chunk
         
-        
-        
-        
+              
+        # отсекаем только нужное количество отсчетов
         data = data[:total_samples]
         stims = stims[:total_samples,0]
         
@@ -351,57 +300,14 @@ class ProtocolEditor(QtWidgets.QWidget):
                 'xml_info': xml_info, 'exp_settings': exp_settings}, file = file)
         file.close()
         
-        
-        
-        
         print('Finished')
         
         self.stim_label.close()
-
+    # END of onStartButtonClicked function
 
     def dragEnterEvent(self, event):
         # Check if the dragged data is of type DragItem
         event.accept()
-        #if event.mimeData().hasFormat('application/x-dnditemdata'):
-        #    event.accept()
-        #else:
-        #    event.ignore()
-    '''
-    def dropEvent(self, event):
-        #pos = event.pos()
-        widget = event.source()
-        #for n in range(self.blayout.count()):
-        #    w = self.blayout.itemAt(n).widget()
-        #    #if self.orientation == Qt.Orientation.Vertical:
-        #    #    drop_here = pos.y() < w.y() + w.size().height() // 2
-        #    #else:
-        #    #    drop_here = pos.x() < w.x() + w.size().width() // 2
-
-        #    #if drop_here:
-        #    #    self.blayout.insertWidget(n - 1, widget)
-        #    #    self.orderChanged.emit(self.get_item_data())
-        #    #    break
-
-        self.layout.insertWidget(0, widget)
-        
-        
-        #mime_data = event.mimeData()
-        
-        #if mime_data.hasText():
-        #    object_name = mime_data.text()
-        #self.dragDropped.emit(f"{object_name} dropped to {self.name}")
-        copy_object = DragItem()
-        copy_object.set_data(widget.name)
-        copy_object.position = widget.position
-        #self.drag_objects.append(new_object)
-        copy_object.parent_ref = widget.parent_ref
-        widget.parent_ref.blayout.insertWidget(copy_object.position, copy_object)#addWidget(new_object)
-        
-        
-        event.acceptProposedAction()
-
-        
-    '''
             
     def dropEvent(self, e):
         pos = e.pos()
@@ -424,13 +330,6 @@ class ProtocolEditor(QtWidgets.QWidget):
             
         self.layout.insertWidget(N_pos, widget)    
         self.protocol_blocks.insert(N_pos,widget.block)
-        #if self.blayout.count()>(N_pos-2):
-        #self.layout.insertWidget(N_pos, widget)
-        
-        #if ???
-        #popped = self.protocol_blocks.pop(widget.position)
-        #self.protocol_blocks.insert(N_pos,popped)
-        #self.reassign_positions(N_pos)
         
         
         copy_object = DragItem()
@@ -441,11 +340,7 @@ class ProtocolEditor(QtWidgets.QWidget):
         copy_object.block = widget.block
         widget.parent_ref.blayout.insertWidget(copy_object.position, copy_object)#addWidget(new_object)
         
-        #else:
-        #    self.blayout.insertWidget(N_pos-1, widget)
-            
-        #self.orderChanged.emit(self.get_item_data())
-       
+              
     
         e.accept()
         
@@ -555,16 +450,7 @@ class DragWidget(QWidget):
   
     def paintEvent(self, event):
         pass
-        '''
-        painter = QtGui.QPainter(self)
-        for i in range(len(self.protocol_blocks)):
-            widget = self.blayout.itemAt(i).widget()
-            if widget.selected:
-                rect = widget.geometry()
-                rect.moveTopLeft(self.blayout.geometry().topLeft() + rect.topLeft())
-                painter.fillRect(rect, QtGui.QColor(200, 200, 255, 100))
-        super().paintEvent(event)'''
-
+      
     
 
     def dragEnterEvent(self, e):
@@ -601,17 +487,7 @@ class DragWidget(QWidget):
 
         e.accept()
         
-    #def get_item_data(self):
-    #    names = []
-    #    for n in range(self.blayout.count()-1):
-            # Get the widget at each index in turn.
-    #        w = self.blayout.itemAt(n).widget()
-    #        names.append(w.name)
-    #    print(names)
-        #return n
-        
-        
-    
+       
 
     def add_item(self, item):
         self.blayout.insertWidget(0, item)
@@ -623,13 +499,6 @@ class DragWidget(QWidget):
     def reassign_positions(self,new_pos):
         for i in range(new_pos+1,len(self.protocol_blocks)):
             self.blayout.itemAt(i).widget().position += 1
-
-   # def get_item_data(self):
-   #     data = []
-   #     for n in range(self.blayout.count()):
-   #         w = self.blayout.itemAt(n).widget()
-   #         data.append(w.data)
-   #     return data
     
     
     def show_block_dialog(self):
@@ -663,12 +532,6 @@ class DragWidget(QWidget):
 
         # Check if a valid file path is provided
         if file_path:
-            # Get the data from the text edit widget
-            #data = self.text_edit.toPlainText()
-            #self.name = name
-            #self.duration = duration
-            #self.message = message
-            #self.code = code
             list_to_save = self.protocol_blocks
 
             # Save the data to the selected file
@@ -775,9 +638,155 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(container)
 
-if __name__ == '__main__':
-    app = QApplication([])
-    w = MainWindow()
-    w.show()
+def RunPreparedProtocol(filename):
+    # десериализовать список блоков
+    data = open(filename,)
+    data = json.load(data) 
 
-    app.exec_()
+    # сформировать словирь блоков из созданной последовательности блоков        
+    blocks = dict()
+    for i in range(len(data)):
+        if data[i]["name"] not in blocks:
+            blocks[data[i]["name"]] = {'duration': data[i]["duration"], 'id': data[i]["code"], 'message': data[i]["message"]}
+    
+    # список меток?
+    seq2 = list()
+    for i in range(len(data)):
+        seq2.append(data[i]["name"])
+        
+    # сформировать имя результирующего файла
+    timestamp_str = datetime.strftime(datetime.now(), '%m-%d_%H-%M-%S')
+    results_path = 'results/{}_{}/'.format('baseline_experiment', timestamp_str)
+        
+    streams = pylsl.resolve_streams()
+
+    # подготовить настройки приемника lsl-канала
+    exp_settings = {
+                'exp_name': 'Baseline',
+                'lsl_stream_name': streams[0].name(),
+                'blocks': blocks,
+                'sequence': seq2,
+    
+                #максимальная буферизация принятых данных через lsl
+                'max_buflen': 5,  # in seconds!!!!
+    
+                #максимальное число принятых семплов в чанке, после которых появляется возможность
+                #считать данные
+                'max_chunklen': 1,  # in number of samples!!!!
+    
+    
+                ##какой канал использовать
+                #'channels_subset': 'P3-A1',
+                #'bands': [[9.0, 13.0],[18.0,25.0]],
+                'results_path': results_path}
+    
+    inlet = LSLInlet(exp_settings)#LSLInlet(exp_settings)
+    inlet.srate = inlet.get_frequency()
+    xml_info = inlet.info_as_xml()
+    channel_names = inlet.get_channels_labels()
+    print(channel_names)
+    exp_settings['channel_names'] = channel_names
+    
+    n_channels = len(channel_names)
+    
+    
+    srate = int(round(inlet.srate)) #Hz
+    exp_settings['srate'] = srate
+    
+    #max buffer length
+    total_samples = 0
+    
+    for block_name in exp_settings['sequence']:
+        current_block = exp_settings['blocks'][block_name]
+        total_samples += round(srate * current_block['duration'])
+    
+    data = np.zeros((total_samples+round(exp_settings['max_buflen']*srate),n_channels))
+    print(data.shape)
+    stims =  np.zeros((total_samples+round(exp_settings['max_buflen']*srate),1)).astype(int)
+    
+    
+    n_samples_received = 0
+    n_samples_received_in_block = 0
+    
+        
+    block_idx = 0
+    block_name = exp_settings['sequence'][0]
+    current_block = exp_settings['blocks'][block_name]
+
+    # посчитать количество отсчетов с учтом частоты
+    n_samples = srate * current_block['duration']
+    block_id = current_block['id']      
+        
+    
+    while (1):
+
+        # как только получли нужно количество отсчетов, переходим к следующему шагу
+        if n_samples_received_in_block >= n_samples:
+            dif =  n_samples_received_in_block - n_samples
+            
+            
+            block_idx += 1
+            
+            
+            if block_idx >= len(exp_settings['sequence']):
+                #save_and_finish()
+                inlet.disconnect()
+    
+                break
+    
+            block_name = exp_settings['sequence'][block_idx]
+            current_block = exp_settings['blocks'][block_name]
+            n_samples = srate * current_block['duration']
+            n_samples_received_in_block = dif
+            block_id = current_block['id']
+            if dif>0:
+                stims[n_samples_received-dif:n_samples_received] = block_id
+        
+    
+        # получить очередной чанк из lsl-канала
+        chunk, t_stamp = inlet.get_next_chunk()
+        # print(f"{chunk=}")
+        if chunk is not None:
+            n_samples_in_chunk = len(chunk)
+
+            # сохранить полученные отсчеты в буфер
+            data[n_samples_received:n_samples_received + n_samples_in_chunk, :] = chunk
+
+            # пометить полученные отсчеты идентификатором текущего блока
+            stims[n_samples_received:n_samples_received + n_samples_in_chunk] = block_id
+
+            # просуммировать количество полученных отсчетов в рамках блока
+            n_samples_received_in_block += n_samples_in_chunk
+
+            # просуммировать общее количество полученных отсчетов
+            n_samples_received += n_samples_in_chunk
+    
+          
+    # отсекаем только нужное количество отсчетов
+    data = data[:total_samples]
+    stims = stims[:total_samples,0]
+    
+    
+    os.makedirs(results_path)
+    
+    file = open(results_path + 'data.pickle', "wb")
+    pickle.dump({'eeg': data, 'stim': stims,
+            'xml_info': xml_info, 'exp_settings': exp_settings}, file = file)
+    file.close()
+    
+    print('Finished')
+    
+    return
+
+if __name__ == '__main__':
+
+    # Если пришли параметры, запускаем альтернативный скрипт
+    # вынести потом его в отдельный файл!!!
+    # len(sys.argv) > 1
+    if(1):
+        RunPreparedProtocol("c:\\Users\\elena\\Documents\\HSE\\Neurofeedback\\brainstart2\\brainstart2\\Brainsart\\Brainstart2\\AlphaTraining\\bin\\Debug\\net6.0-windows\\Data\\scenarios\\test.json")
+    else:
+        app = QApplication([])
+        w = MainWindow()
+        w.show()
+        app.exec_()

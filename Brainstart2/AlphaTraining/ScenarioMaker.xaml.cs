@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace AlphaTraining
 {
@@ -22,6 +11,9 @@ namespace AlphaTraining
         public ScenarioMaker()
         {
             InitializeComponent();
+
+            lbBlocks.ItemsSource = ProtocolBlocks.GetInstance().GetBlocks();
+            lbScript.ItemsSource = Protocol.GetInstance().GetBlocks();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -45,8 +37,94 @@ namespace AlphaTraining
             }
 
             // Сохранить сценарий в файл
+            Protocol.GetInstance().Serialize(@"./Data/scenarios/" + tbScenarioName.Text + ".json");
 
             this.Close();
+        }
+
+        private void btnAddCondition_Click(object sender, RoutedEventArgs e)
+        {
+            // Показать форму создания блока
+            var creatorForm = new ProtocolBlockCreator();
+            creatorForm.SetBlockType(BlockType.Condition);
+            creatorForm.ShowDialog();
+
+            lbBlocks.Items.Refresh();
+        }
+
+        private void btnAddWait_Click(object sender, RoutedEventArgs e)
+        {
+            // Показать форму создания блока
+            var creatorForm = new ProtocolBlockCreator();
+            creatorForm.SetBlockType(BlockType.Wait);
+            creatorForm.ShowDialog();
+            
+            lbBlocks.Items.Refresh();
+        }
+
+        private void btnAddBlock_Click(object sender, RoutedEventArgs e)
+        {
+            if(lbBlocks.SelectedItem != null)
+            {
+                int selectedBlockIndex = lbBlocks.SelectedIndex;
+
+                // Добавить новый блок в конец
+                Protocol.GetInstance().Add(ProtocolBlocks.GetInstance().GetBlocks()[selectedBlockIndex]);
+
+                lbScript.Items.Refresh();
+
+                return;
+            }
+
+            MessageBox.Show("Выберите блок, который необходимо добавить в протокол!");
+        }
+
+        private void btnRemoveBlock_Click(object sender, RoutedEventArgs e)
+        {
+            if (lbScript.SelectedItem != null)
+            {
+                int selectedBlockIndex = lbScript.SelectedIndex;
+
+                Protocol.GetInstance().Remove(selectedBlockIndex);
+
+                lbScript.Items.Refresh();
+
+                return;
+            }
+
+            MessageBox.Show("Выберите блок, который необходимо добавить в протокол!");
+        }
+
+        private void btnMoveUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (lbScript.SelectedItem != null)
+            {
+                int selectedBlockIndex = lbScript.SelectedIndex;
+
+                Protocol.GetInstance().MoveUp(selectedBlockIndex);
+
+                lbScript.Items.Refresh();
+
+                return;
+            }
+
+            MessageBox.Show("Выберите блок, который необходимо переместить!");
+        }
+
+        private void btnMoveDown_Click(object sender, RoutedEventArgs e)
+        {
+            if (lbScript.SelectedItem != null)
+            {
+                int selectedBlockIndex = lbScript.SelectedIndex;
+
+                Protocol.GetInstance().MoveDown(selectedBlockIndex);
+
+                lbScript.Items.Refresh();
+
+                return;
+            }
+
+            MessageBox.Show("Выберите блок, который необходимо переместить!");
         }
     }
 }

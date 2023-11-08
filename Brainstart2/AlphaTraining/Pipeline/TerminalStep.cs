@@ -7,23 +7,24 @@ using System.Threading.Tasks;
 
 namespace AlphaTraining.Pipeline
 {
-    class ExperimentPipeline : PipelineItem
+    internal class TerminalStep : PipelineItem
     {
-        public ExperimentPipeline(string name) : base(name)
+        public TerminalStep(MainWindow mainWindow, string name) : base(mainWindow, name)
         {
+        }
+
+        public override bool CanMoveForward()
+        {
+            return true;
         }
 
         public override string GetArguments()
         {
-            return base.GetArguments();
+            return String.Empty;
         }
 
         public override bool Run(string argument)
         {
-            base.Run(argument);
-
-            // TODO: передать имя файла с записью baseline
-
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = @".\Data\utils\Brainstart2.exe";
             startInfo.Arguments = argument;

@@ -6,5 +6,4 @@ Created on Mon Mar 13 20:56:58 2023
 """
 import mne
 
-
 raw =mne.io.Raw('records/probe.fif')

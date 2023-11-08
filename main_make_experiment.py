@@ -635,7 +635,7 @@ class DragWidget(QWidget):
             #self.message = message
             #self.code = code
             list_to_save = self.protocol_blocks
-vyt
+
             # Save the data to the selected file
             with open(file_path, "wb") as file:
                 #file.write(data_to_save)

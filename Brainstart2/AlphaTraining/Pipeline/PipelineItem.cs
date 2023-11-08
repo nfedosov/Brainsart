@@ -1,10 +1,5 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+﻿using System;
+using System.IO;
 
 namespace AlphaTraining
 {
@@ -18,13 +13,15 @@ namespace AlphaTraining
 
         public bool Completed { get { return _completed; } }
 
+        protected MainWindow _mainWindow;
+
         public string Icon
         {
             get
             {
                 if(Completed)
                 {
-                    return @"c:\Users\elena\Documents\HSE\Neurofeedback\brainstart2\brainstart2\Brainsart\Brainstart2\AlphaTraining\bin\Debug\net6.0-windows\Data\icons\done.png";
+                    return Path.GetFullPath(@".\Data\icons\done.png");
                 }
                 else
                 {
@@ -33,10 +30,16 @@ namespace AlphaTraining
             }
         }
 
-        public PipelineItem(string name)
+        public PipelineItem(MainWindow mainWindow, string name)
         {
+            _mainWindow = mainWindow;
             _name = name;
             _completed = false;
+        }
+
+        public virtual bool CanMoveForward()
+        {
+            return true;
         }
 
         public virtual string GetArguments()

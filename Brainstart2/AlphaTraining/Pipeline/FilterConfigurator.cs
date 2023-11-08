@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Enumeration;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,8 @@ namespace AlphaTraining
     {
         string resultFileName;
 
-        public FilterConfigurator(string name) : base(name)
+        public FilterConfigurator(MainWindow mainWindow, string name) 
+            : base(mainWindow, name)
         {
         }
 
@@ -23,15 +25,16 @@ namespace AlphaTraining
 
         public override bool Run(string argument)
         {
-            base.Run(argument);
+            // В качестве аргумента должно прийти имя файла с baseline
 
-            resultFileName = argument.Split(' ')[1];
+            resultFileName = Path.GetFullPath(
+                String.Format(@"./Data/users/{0}/config_{1}.txt", _mainWindow.GetUserName(), DateTime.Now.Ticks));
 
             // TODO: передать имя файла с записью baseline
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = @"c:\Users\elena\anaconda3\Python.exe";
-            startInfo.Arguments = @"./Data/scripts/main_EEG_analysis.py " + argument;
+            startInfo.Arguments = @"./Data/scripts/main_EEG_analysis.py " + argument + " " + resultFileName;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             var process = Process.Start(startInfo);
