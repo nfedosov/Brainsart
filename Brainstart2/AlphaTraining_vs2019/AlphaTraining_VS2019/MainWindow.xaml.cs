@@ -110,10 +110,13 @@ namespace AlphaTraining
             lbScenarios.Items.Clear();
             _scenarios.Clear();
 
-            foreach (var filename in Directory.GetFiles(@"./Data/scenarios"))
+            if (Directory.Exists(@"./Data/scenarios"))
             {
-                _scenarios.Add(Path.GetFileNameWithoutExtension(filename));
-                lbScenarios.Items.Add(Path.GetFileNameWithoutExtension(filename));
+                foreach (var filename in Directory.GetFiles(@"./Data/scenarios"))
+                {
+                    _scenarios.Add(Path.GetFileNameWithoutExtension(filename));
+                    lbScenarios.Items.Add(Path.GetFileNameWithoutExtension(filename));
+                }
             }
         }
 
