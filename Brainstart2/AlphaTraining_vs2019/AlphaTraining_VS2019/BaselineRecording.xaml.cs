@@ -21,7 +21,9 @@ namespace AlphaTraining
     /// Interaction logic for BaselineRecording.xaml
     /// </summary>
     public partial class BaselineRecording : Window
-    {        
+    {
+        List<ProtocolBlock> _blocks;
+
         public BaselineRecording()
         {
             InitializeComponent();
@@ -70,9 +72,15 @@ namespace AlphaTraining
             timer = new Timer(new TimerCallback(FinalizeRecording), null, cumulativeDelay, 0);
         }
 
-        public async void PlayScenario(List<ProtocolBlock> blocks)
+        public void SetScenario(List<ProtocolBlock> blocks)
         {
-            Play(blocks);
+            _blocks = blocks;
+            
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await Play(_blocks);
         }
     }
 }

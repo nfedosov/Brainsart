@@ -36,8 +36,12 @@ namespace AlphaTraining
                 return;
             }
 
-            // Сохранить сценарий в файл
-            Protocol.GetInstance().Serialize(@"./Data/scenarios/" + tbScenarioName.Text + ".json");
+            // Проверить корректность протокола
+            if(Protocol.GetInstance().IsValid())
+            {
+                // Сохранить сценарий в файл
+                Protocol.GetInstance().Serialize(@"./Data/scenarios/" + tbScenarioName.Text + ".json");
+            }
 
             this.Close();
         }

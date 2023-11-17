@@ -53,7 +53,7 @@ namespace AlphaTraining
                     if (null != process)
                     {
                         BaselineRecording baselineRecording = new BaselineRecording();
-                        baselineRecording.PlayScenario(blocks);
+                        baselineRecording.SetScenario(blocks);
                         baselineRecording.ShowDialog();
                                                 
                         // Ждем, когда скрипт отработает

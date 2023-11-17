@@ -120,6 +120,8 @@
     <Compile Include="ProtocolMaker\ProtocolBlock\WaitProtocolBlock.cs" />
     <Compile Include="ScenarioMaker.xaml.cs" />
     <Compile Include="SystemVariables.cs" />
+    <Compile Include="UserCard\Transliteration.cs" />
+    <Compile Include="UserCard\UserCard.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

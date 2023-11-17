@@ -19,7 +19,7 @@ namespace AlphaTraining
     /// </summary>
     public partial class OptionSelectorWindow : Window
     {
-        string _userName = string.Empty;
+        UserCard _userCard;
         List<string> _usersList = new List<string>();
 
         ApplicationMode _applicationMode = ApplicationMode.None;
@@ -48,10 +48,19 @@ namespace AlphaTraining
             // В случае успеха сохранить имя пользователя
             if(true == newUserDialog.DialogResult)
             {
-                _userName = newUserDialog.GetUrerName();
+                _userCard = newUserDialog.GetUrerCard();
+
                 _applicationMode = ApplicationMode.NewUser;
                 Close();
             }
+        }
+
+        private void LoadUserCard(string userId)
+        {
+            _userCard = UserCard.Load(userId);
+
+            _applicationMode = ApplicationMode.NewUser;
+            Close();
         }
 
         private void btnAnalysis_Click(object sender, RoutedEventArgs e)
@@ -66,7 +75,7 @@ namespace AlphaTraining
 
         public string GetUserName()
         {
-            return _userName;
+            return _userCard.Id;
         }
 
         private void lbUsersList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -85,7 +94,8 @@ namespace AlphaTraining
                 }
                 else
                 {
-                    MessageBox.Show("Функционал скоро будет написан :)");
+                    // Загрузить карточку выбранного пользователя
+                    LoadUserCard(_usersList[lbUsersList.SelectedIndex]);
                 }
             }
         }

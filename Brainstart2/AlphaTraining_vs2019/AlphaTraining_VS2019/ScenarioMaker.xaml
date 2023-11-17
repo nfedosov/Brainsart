@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AlphaTraining"
         mc:Ignorable="d"
-        Title="ScenarioMaker" Height="450" Width="800">
+        Title="Новый протокол" Height="450" Width="1000.693">
     <Grid Margin="3,3,3,3">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
@@ -13,43 +13,54 @@
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel>
-            <TextBlock FontSize="16">Название сценария:</TextBlock>
+            <TextBlock FontSize="16">Название протокола:</TextBlock>
             <TextBox FontSize="16" Name="tbScenarioName" />
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="170"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
                 <ColumnDefinition Width="50"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
                 <ColumnDefinition  Width="3*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ListBox Name="lbScript" Grid.Column="0">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock FontSize="16" Text="{Binding label}" ></TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
-                <Button Name="btnAddBlock" Height="35" Margin="5, 0, 5, 0" Content="добав." Click="btnAddBlock_Click"></Button>
-                <Button Name="btnRemoveBlock" Height="35" Margin="5, 5, 5, 0" Content="удал." Click="btnRemoveBlock_Click"></Button>
-                <Button Name="btnMoveUp" Height="35" Margin="5, 5, 5, 0" Content="вверх" Click="btnMoveUp_Click"></Button>
-                <Button Name="btnMoveDown" Height="35" Margin="5, 5, 5, 0" Content="вниз" Click="btnMoveDown_Click"></Button>
-            </StackPanel>
-            <Grid Grid.Column="2" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition Width="170"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <ListBox Grid.Column="0" Name="lbBlocks">
+            <GroupBox Header="Протокол:" FontSize="16">
+                <ListBox Name="lbScript" Grid.Column="0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock FontSize="16" Text="{Binding label}" ></TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <StackPanel Grid.Column="1" Orientation="Vertical">
-                    <Button Name="btnAddCondition" Content="Добавить блок условия" Click="btnAddCondition_Click" FontSize="14"/>
-                    <Button Name="btnAddWait" Content="Добавить блок паузы" Margin="0, 5, 0, 0" Click="btnAddWait_Click" FontSize="14"/>
+            </GroupBox>
+            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5, 15, 5, 5">
+                <Button Name="btnRemoveBlock" Height="30" Margin="5, 5, 5, 0" Content="Удалить" FontSize="14" Click="btnRemoveBlock_Click"></Button>
+                <Button Name="btnMoveUp" Height="30" Margin="5, 5, 5, 0" Content="Преместить вверх" FontSize="14" Click="btnMoveUp_Click"></Button>
+                <Button Name="btnMoveDown" Height="30" Margin="5, 5, 5, 0" Content="Переместить вниз" FontSize="14" Click="btnMoveDown_Click"></Button>
+            </StackPanel>
+            <GridSplitter Grid.Column="2"></GridSplitter>
+            <StackPanel Grid.Column="3" Orientation="Vertical" VerticalAlignment="Center">
+                <Button Name="btnAddBlock" Height="35" Margin="5, 0, 5, 0" Content="&lt;-" Click="btnAddBlock_Click"></Button>
+            </StackPanel>
+            <GridSplitter Grid.Column="4"></GridSplitter>
+            <Grid Grid.Column="5" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="170"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="Блоки протокола:" FontSize="16">
+                    <ListBox Grid.Column="0" Name="lbBlocks">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock FontSize="16" Text="{Binding label}" ></TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </GroupBox>
+                <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5,15,5,5">
+                    <Button Name="btnAddCondition" Content="Добавить блок условия" Click="btnAddCondition_Click" FontSize="14" Height="30"/>
+                    <Button Name="btnAddWait" Content="Добавить блок паузы" Margin="0, 5, 0, 0" Click="btnAddWait_Click" FontSize="14" Height="30"/>
                 </StackPanel>
             </Grid>
         </Grid>

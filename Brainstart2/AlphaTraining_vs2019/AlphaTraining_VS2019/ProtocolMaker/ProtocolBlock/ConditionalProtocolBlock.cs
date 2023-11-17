@@ -18,7 +18,7 @@ namespace AlphaTraining
         public ConditionalProtocolBlock(string name, int blockId, int waitId, double duration, string message)
             : base(blockId, String.Format("Cond{0}", waitId), message, duration, blockId, name)
         {
-            
+            BlockType = ProtocolBlockType.Condition;
         }
     }
 }

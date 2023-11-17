@@ -18,7 +18,7 @@ namespace AlphaTraining
         public WaitProtocolBlock(string name, int blockId, int waitId, double duration)
             : base(blockId, String.Format("Wait{0}", waitId), "+", duration, blockId, name)
         {
-
+            BlockType = ProtocolBlockType.Wait;
         }
     }
 }

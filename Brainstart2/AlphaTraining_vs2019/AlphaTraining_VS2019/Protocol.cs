@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Windows;
 
 namespace AlphaTraining
 {
@@ -57,6 +58,31 @@ namespace AlphaTraining
                 blocks.RemoveAt(selectedBlockIndex);
                 blocks.Insert(selectedBlockIndex + 1, selectedBlock);
             }
+        }
+
+        public bool IsValid()
+        {
+            // Протокол долже содержать как минимум ДВА условия
+
+            // Тут можно использовать LINQ
+            int nConditionBlocksCount = 0;
+            foreach (var protocolBlock in blocks)
+            {
+                if (protocolBlock.BlockType == ProtocolBlockType.Condition)
+                {
+                    nConditionBlocksCount++;
+                }
+            }
+
+            if(nConditionBlocksCount < 2)
+            {
+
+                // TODO: сделать по нормальному(
+                MessageBox.Show("Протокол должен содержать как минимум 2 условия!");
+                return false;
+            }
+
+            return true;
         }
 
         internal void Serialize(string fileName)

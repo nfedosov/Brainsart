@@ -5,30 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AlphaTraining"
         mc:Ignorable="d"
-        Title="Добавление нового пользователя" Height="275" Width="340" MaxHeight="275" MaxWidth="340">
+        Title="Анкета нового пользователя" Height="405" Width="340" MaxHeight="405" MaxWidth="340">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="64"></RowDefinition>
             <RowDefinition Height="64"></RowDefinition>
             <RowDefinition Height="64"></RowDefinition>
+            <RowDefinition Height="64"></RowDefinition>
+            <RowDefinition Height="70"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
-        <GroupBox Grid.Row="0" Header="Имя пользователя" Margin="10,10,10,10">
-            <TextBox Name="tbUserName" FontSize="14">
+        <GroupBox Grid.Row="0" Header="Имя" Margin="10,10,10,10">
+            <TextBox Name="tbUserName" FontSize="14" TextChanged="tbUserName_TextChanged">
             </TextBox>
         </GroupBox>
-        <GroupBox Grid.Row="1" Header="Пол" Margin="10,10,10,10">
-            <ComboBox SelectedIndex="0">
-                <ComboBoxItem Content="Мужской"></ComboBoxItem>
-                <ComboBoxItem Content="Женский"></ComboBoxItem>
+        <GroupBox Grid.Row="1" Header="Фамилия" Margin="10,10,10,10">
+            <TextBox Name="tbUserSurname" FontSize="14" TextChanged="tbUserSurname_TextChanged">
+            </TextBox>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Header="Пол" Margin="10,10,10,10">
+            <ComboBox Name="cbUserGender" SelectedIndex="0" ItemsSource="{Binding Path=genders}">
             </ComboBox>
         </GroupBox>
-        <GroupBox Grid.Row="2" Header="Возраст" Margin="10,10,10,10">
+        <GroupBox Grid.Row="3" Header="Возраст" Margin="10,10,10,10">
             <TextBox Name="tbUserAge" FontSize="14">
             </TextBox>
         </GroupBox>
-
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+        <GroupBox Grid.Row="4" Header="Идентификатор" Margin="10,10,10,10">
+            <Label Name="lblUserId" FontSize="12">
+            </Label>
+        </GroupBox>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Name="btnDone" Content="Готово" Width="80" Margin="0,5, 0, 5" Click="btnDone_Click" IsDefault="True" ></Button>
             <Button Name="btnCancel" Content="Отмена" Width="80" Margin="5,5, 5, 5" Click="btnCancel_Click"></Button>
         </StackPanel>

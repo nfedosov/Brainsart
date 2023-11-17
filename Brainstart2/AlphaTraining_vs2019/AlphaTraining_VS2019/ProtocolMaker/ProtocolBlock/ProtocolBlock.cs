@@ -6,6 +6,16 @@ using System.Threading.Tasks;
 
 namespace AlphaTraining
 {
+    public enum ProtocolBlockType
+    { 
+        None,
+
+        Wait,
+
+        Condition,
+    }
+
+
     public class ProtocolBlock
     {
         public string name
@@ -39,7 +49,12 @@ namespace AlphaTraining
             get; set;
         }
 
-        public ProtocolBlock()
+        public ProtocolBlockType BlockType
+        {
+            get; set;
+        }
+
+    public ProtocolBlock()
         {
 
         }

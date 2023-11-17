@@ -62,12 +62,12 @@
                                     <RowDefinition Height="30"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 
-                                 <GroupBox Grid.Row="0" Header="Сценарии записи baseline" FontSize="16">
+                                 <GroupBox Grid.Row="0" Header="Выберите протокол записи:" FontSize="16">
                                     <ListBox Name="lbScenarios" SelectionChanged="lbScenarios_SelectionChanged"></ListBox>
                                  </GroupBox>
                                 
                                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <Button Name="btnEditScenario" Content="Редактировать" Margin="0, 0, 5, 0" Width="80" Click="btnEditScenario_Click" IsEnabled="False"></Button>
+                                    <Button Name="btnEditScenario" Content="Редакт." Margin="0, 0, 5, 0" Width="80" Click="btnEditScenario_Click" IsEnabled="False"></Button>
                                     <Button Name="btnNewScenario" Content="Новый" Margin="0, 0, 5, 0" Width="80" Click="btnNewScenario_Click"></Button>
                                     <Button Name="btnDeleteScenario" Content="Удалить" Margin="0, 0, 0, 0" Width="80" Click="btnDeleteScenario_Click"></Button>
                                 </StackPanel>
