@@ -21,7 +21,7 @@ namespace AlphaTraining
         string _userName = string.Empty;
         List<PipelineItem> _steps;
         List<String> _scenarios = new List<String>();
-        
+        List<PlotView> _plots = new List<PlotView>();
 
         private int _step = 0;
         public MainWindow()
@@ -29,11 +29,11 @@ namespace AlphaTraining
             InitializeComponent();
 
             _steps = new List<PipelineItem>() {
-                new ExperimentPreparation(this, "Подготовка эксперимента"),
-                new BaselineRecorder(this, "Запись baseline"),
+                new ExperimentPreparation(this, "Подготовка к калибровке"),
+                new BaselineRecorder(this, "Калибровка"),
                 new FilterConfigurator(this, "Настройка"),
                 new ExperimentSettingsPipeline(this, "Тренинг"),
-                new TerminalStep(this, "Старт"),
+                //new TerminalStep(this, "Старт"),
             };
 
             lbStepsProgress.ItemsSource = _steps;
@@ -43,13 +43,27 @@ namespace AlphaTraining
             PrepareScenarios();
         }
 
+        internal Visualization GetSelectedGameName()
+        {
+            if(rbPenguin.IsChecked.Value)
+            {
+                return Visualization.Penguin;
+            }
+            else if (rbFontain.IsChecked.Value)
+            {
+                return Visualization.Fontain;
+            }
+
+            return Visualization.None;
+        }
+
         private string EncloseWithQuotes(string filename)
         {
-            if(filename.StartsWith("\""))
+            if (filename.StartsWith("\""))
             {
                 return filename;
             }
-                        
+
             return "\"" + filename + "\"";
 
         }
@@ -58,35 +72,40 @@ namespace AlphaTraining
         {
             bool jumpToNextStep = false;
 
-            if(false == _steps[_step].CanMoveForward())
+            if (false == _steps[_step].CanMoveForward())
             {
                 return false;
             }
 
-            if ((step > 0) && (step < _steps.Count))
+            if (_step < _steps.Count)
             {
+                if (_step == 0)
+                {
+                    jumpToNextStep = _steps[_step].Run("");
+                }
+                else
+                {                   
+                   if (step == (_steps.Count - 1))
+                   {
+                       btnNextStep.Content = "Старт!";
+                   }
+                   else
+                   {
+                       btnNextStep.Content = "Далее";
+                   }
 
-                switch (step)
-                {    
-                    default:
-                        
-
-                        if (_step == (_steps.Count - 2))
-                        {
-                            btnNextStep.Content = "Поехали!";
-                        }
-                        else
-                        {
-                            btnNextStep.Content = "Далее";
-                        }
-
-                        jumpToNextStep = _steps[step].Run(_steps[step - 1].GetArguments());
-                        break;
+                   jumpToNextStep = _steps[_step].Run(_steps[_step - 1].GetArguments());
                 }
 
                 _step = step;
                 lbStepsProgress.SelectedIndex = _step;
                 lbStepsProgress.Items.Refresh();
+
+                
+            }
+
+            if (_step < _steps.Count)
+            {
                 lblStepName.Content = _steps[_step].Name;
             }
             else
@@ -122,7 +141,7 @@ namespace AlphaTraining
 
         private void NextStep_Click(object sender, RoutedEventArgs e)
         {
-            if(_step <= (_steps.Count))
+            if (_step <= (_steps.Count))
             {
                 bool jumpToNext = JumpToStep(_step + 1);
 
@@ -196,12 +215,12 @@ namespace AlphaTraining
                     List<ProtocolBlockDescriptor> blocksDescriptors = new List<ProtocolBlockDescriptor>();
                     if (null != blocks)
                     {
-                        foreach(var block in blocks)
+                        foreach (var block in blocks)
                         {
                             blocksDescriptors.Add(new ProtocolBlockDescriptor(block));
                         }
-                        
-                        
+
+
 
                         lbProtocolDetails.ItemsSource = blocksDescriptors;
                         lbProtocolDetails.Items.Refresh();
@@ -213,6 +232,110 @@ namespace AlphaTraining
         private void btnEditScenario_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+               
+
+        public void LoadPlots()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                _plots.Add(new PlotView(i));
+            }
+
+            lbPlots.ItemsSource = _plots;
+        }
+
+        private void UpdatePlotsView()
+        {
+            foreach (var plot in _plots)
+            {
+                plot.SwitchView();
+            }
+
+            lbPlots.Items.Refresh();
+        }
+
+        private void rbTimeSeries_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_plots.Count != 0)
+            {
+                rbSpectrum.IsChecked = false;
+
+                UpdatePlotsView();
+            }
+        }
+
+        private void rbSpectrum_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_plots.Count != 0)
+            {
+                rbTimeSeries.IsChecked = false;
+
+                UpdatePlotsView();
+            }
+        }
+
+        public int GetSelectedPlot()
+        {
+            for(int i = 0; i < _plots.Count; i++)
+            {
+                if(_plots[i].IsSelected)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        public string GetSpatialFilerLowerFreq()
+        {
+            return tbHighPassFilter.Text.Replace(',', '.');
+        }
+
+        public string GetSpatialFilerHighFreq()
+        {
+            return tbLowPassFilter.Text.Replace(',', '.');
+        }
+
+        public string GetSpatialFilterType()
+        {
+            return cbSpatialFilterType.Text;
+        }
+
+        public string GetTemporalFilterType()
+        {
+            return cbTemporalFilterType.Text;
+        }
+
+        public string GetCentralFrequencyValue()
+        {
+            if(cbAutoCentralFreq.IsChecked.Value)
+            {
+                return "auto_" + cbRythmType.SelectedValue.ToString();
+            }
+            else
+            {
+                return tbCentralFreqVal.Text;
+            }
+        }
+
+        private void cbAutoCentralFreq_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if ((gbAutoCentralFreq != null) && (gbExactCentralFreq != null))
+            {
+                gbAutoCentralFreq.Visibility = Visibility.Hidden;
+                gbExactCentralFreq.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void cbAutoCentralFreq_Checked(object sender, RoutedEventArgs e)
+        {
+            if ((gbAutoCentralFreq != null) && (gbExactCentralFreq != null))
+            {
+                gbAutoCentralFreq.Visibility = Visibility.Visible;
+                gbExactCentralFreq.Visibility = Visibility.Hidden;
+            }
         }
     }
 }

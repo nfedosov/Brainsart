@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 
 namespace AlphaTraining
 {
@@ -13,32 +14,54 @@ namespace AlphaTraining
         {
         }
 
+        public override bool CanMoveForward()
+        {
+            if(-1 == _mainWindow.GetSelectedPlot())
+            {
+                MessageBox.Show("Выберите один из каналов для дальнейшей конфигурации!");
+                return false;
+            }
+
+            return true;
+        }
+
         public override string GetArguments()
         {
             return resultFileName;
         }
 
+        public override void Prepare(string argument)
+        {
+           
+
+        }
+
         public override bool Run(string argument)
         {
+            
+
             // В качестве аргумента должно прийти имя файла с baseline
 
             resultFileName = Path.GetFullPath(
-                String.Format(@"./Data/users/{0}/config_{1}.txt", _mainWindow.GetUserName(), DateTime.Now.ToString("dd.MM.yyyy_H.mm")));
+                String.Format(@"./Data/users/{0}/config.txt", _mainWindow.GetUserName(), DateTime.Now.ToString("dd.MM.yyyy_H.mm")));
 
-            // TODO: передать имя файла с записью baseline
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = SystemVariables.Instance.PythonPath;
-            startInfo.Arguments = @"./Data/scripts/main_EEG_analysis.py " + argument + " " + resultFileName;
+            startInfo.Arguments = @"./Data/scripts/FitKalmanFilter.py "
+            + argument + " "
+            + _mainWindow.GetSelectedPlot().ToString() + " "
+            + resultFileName;
+
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             var process = Process.Start(startInfo);
-            if(null != process)
+            if (null != process)
             {
                 process.WaitForExit();
             }
 
-            return true;
+            return false;
         }
     }
 }

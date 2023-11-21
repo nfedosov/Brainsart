@@ -117,6 +117,7 @@ private:
     QToolButton *zoomLeftButton;
     QToolButton *zoomRightButton;
 
+    void LaunchPenguin();
 };
 
 #endif // SIGNALPLOTWIN_H

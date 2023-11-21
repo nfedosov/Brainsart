@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AlphaTraining"
         mc:Ignorable="d"
-        Title="BaselineRecording" Height="450" Width="800" WindowState="Maximized" Background="DarkGray"
+        Title="Калибровка" Height="450" Width="800" WindowState="Maximized" Background="DarkGray"
         Loaded="Window_Loaded">
     <Label Name="tbScreen" FontSize="64" VerticalAlignment="Center" HorizontalAlignment="Center">
         

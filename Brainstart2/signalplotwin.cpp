@@ -54,7 +54,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
                         this->height() - 100,
                         zoomInButton->width(), zoomInButton->height());
 
-    QIcon upIcon("C:/Users/Fedosov/Documents/projects/brainstart2/Brainstart2/zoom_up.png");
+    QIcon upIcon("./Data/icons/zoom_up.png");
     zoomInButton->setIcon(upIcon);
     zoomInButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -64,7 +64,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
                         this->height() - 50,
                         zoomOutButton->width(), zoomOutButton->height());
 
-    QIcon downIcon("C:/Users/Fedosov/Documents/projects/brainstart2/Brainstart2/zoom_down.png");
+    QIcon downIcon("./Data/icons/zoom_down.png");
     zoomOutButton->setIcon(downIcon);
     zoomOutButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -74,7 +74,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
                         this->height() - 75,
                         zoomLeftButton->width(), zoomLeftButton->height());
 
-    QIcon leftIcon("C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/zoom_left.png");
+    QIcon leftIcon("./Data/icons/zoom_left.png");
     zoomLeftButton->setIcon(leftIcon);
     zoomLeftButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -82,12 +82,12 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
                         this->height() - 75,
                         zoomRightButton->width(), zoomRightButton->height());
 
-    QIcon rightIcon("C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/zoom_right.png");
+    QIcon rightIcon("./Data/icons/zoom_right.png");
     zoomRightButton->setIcon(rightIcon);
     zoomRightButton->setStyleSheet("QToolButton { border: none; }");
 
 
-    QIcon recIcon("C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/record.png");
+    QIcon recIcon("./Data/icons/record.png");
     recordButton->setIcon(recIcon);
 
 
@@ -659,36 +659,42 @@ void SignalPlotWin::onzoomOutButtonclicked()
 }
 
 
+
+
 void SignalPlotWin::onstartButtonclicked()
 {
     if (!is_started)
     {
 
-    fbwin =new SimpleBarFBWin();
-    fbwin->show();
+        fbwin =new SimpleBarFBWin();
+        fbwin->show();
 
 
-    QThread* thread = new QThread;
+        QThread* thread = new QThread;
 
 
-    // Move the object to the new thread
-    datareceiver->moveToThread(thread);
+        // Move the object to the new thread
+        datareceiver->moveToThread(thread);
 
-    // Connect the thread's started() signal to the method you want to run
-    connect(thread, &QThread::started, datareceiver, &DataReceiver::lslDataReceive);
+        // Connect the thread's started() signal to the method you want to run
+        connect(thread, &QThread::started, datareceiver, &DataReceiver::lslDataReceive);
 
-    // Start the thread
-    thread->start();
+        // Start the thread
+        thread->start();
 
 
-    //samplesfromstart = 0;
-    curwinidx = 0;
-    prevbufidx = 0;
-    curbufidx = datareceiver->curposidx;
-    // накопившееся семплы, которые мы уже визуализировали
-    //cumwinsamples =0;
-    timer.start(50); // Interval 0 means to refresh as fast as possible
-    is_started = true;
+        //samplesfromstart = 0;
+        curwinidx = 0;
+        prevbufidx = 0;
+        curbufidx = datareceiver->curposidx;
+        // накопившееся семплы, которые мы уже визуализировали
+        //cumwinsamples =0;
+        timer.start(50); // Interval 0 means to refresh as fast as possible
+        is_started = true;
+
+
+        // NEW: запускаем в космос пингвина
+        LaunchPenguin();
     }
     else
     {
@@ -820,6 +826,36 @@ void SignalPlotWin::resizeEvent(QResizeEvent *event)
 
 
 
+}
+
+void SignalPlotWin::LaunchPenguin()
+{
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+
+    BOOL fResult = CreateProcessW(
+        L".\\Data\\games\\ModulPack\\main.exe",
+        NULL,
+        NULL,
+        NULL, 
+        FALSE,
+        0,
+        NULL, 
+        NULL,
+        &si,
+        &pi
+    );
+
+    if (fResult)
+    {
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    }
 }
 
 

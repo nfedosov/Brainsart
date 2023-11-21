@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 
 namespace AlphaTraining.Pipeline
 {
@@ -18,12 +19,22 @@ namespace AlphaTraining.Pipeline
 
         public override bool CanMoveForward()
         {
-            return _mainWindow.GetSelectedProtocolName() != String.Empty;
+            if(_mainWindow.GetSelectedProtocolName() == String.Empty)
+            {
+                MessageBox.Show("Выберите протокол калибровки!");
+                return false;
+            }
+            return true;
+        }
+
+        public override void Prepare(string argument)
+        {
+
         }
 
         public override bool Run(string argument)
         {
-            return false;
+            return true;
         }
     }
 }

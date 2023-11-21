@@ -46,7 +46,7 @@ namespace AlphaTraining
 
             Dispatcher.Invoke((Action)delegate ()
             {
-                tbScreen.Content = "Запись baseline закончена!";
+                tbScreen.Content = "Калибровка закончена!";
                 SystemSounds.Asterisk.Play();
                 WindowStyle = WindowStyle.SingleBorderWindow;
             });

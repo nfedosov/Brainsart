@@ -47,6 +47,11 @@ namespace AlphaTraining
             return String.Empty;
         }
 
+        public virtual void Prepare(string argument)
+        {
+
+        }
+
         public virtual bool Run(string argument)
         {
             _completed = true;

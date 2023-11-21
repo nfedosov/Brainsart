@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AlphaTraining_VS2019.Properties {
+namespace AlphaTraining.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

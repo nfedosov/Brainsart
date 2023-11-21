@@ -27,6 +27,11 @@ namespace AlphaTraining
             return _recordingFilename;
         }
 
+        public override void Prepare(string argument)
+        {
+
+        }
+
         public override bool Run(string argument)
         {
             // в качестве аргумента пришел
@@ -58,11 +63,30 @@ namespace AlphaTraining
                                                 
                         // Ждем, когда скрипт отработает
                         process.WaitForExit();
+
+                        // Запускаем следующий скрипт, которрый нарисует графики
+                        startInfo = new ProcessStartInfo();
+                        startInfo.FileName = SystemVariables.Instance.PythonPath;
+                        startInfo.Arguments = @"./Data/scripts/CreateTimeSeriesPlot.py "
+                        + argument + " "
+                        + _mainWindow.GetSpatialFilerLowerFreq() + " "
+                        + _mainWindow.GetSpatialFilerHighFreq();
+
+                        startInfo.UseShellExecute = false;
+                        startInfo.CreateNoWindow = true;
+                        process = Process.Start(startInfo);
+                        if (null != process)
+                        {
+                            process.WaitForExit();
+                        }
+
+                        // Подрузим графики
+                        _mainWindow.LoadPlots();
                     }
                 }
             }
 
-            return true;
+            return false;
         }
     }
 }

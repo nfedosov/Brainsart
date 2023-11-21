@@ -23,6 +23,11 @@ namespace AlphaTraining.Pipeline
             return String.Empty;
         }
 
+        public override void Prepare(string argument)
+        {
+
+        }
+
         public override bool Run(string argument)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();

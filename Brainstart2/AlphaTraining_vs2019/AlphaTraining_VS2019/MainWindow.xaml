@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AlphaTraining"
         mc:Ignorable="d"
-        Title="Alpha training" Height="450" Width="800">
+        Title="Alpha training" Height="691.828" Width="1177.701" WindowState="Maximized">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="70*"/>
         </Grid.ColumnDefinitions>
@@ -30,7 +30,7 @@
         <GridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></GridSplitter>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="80"></RowDefinition>
+                <RowDefinition Height="100"></RowDefinition>
                 <RowDefinition Height="30"></RowDefinition>
                 <RowDefinition></RowDefinition>
                 <RowDefinition Height="40"></RowDefinition>
@@ -41,7 +41,7 @@
                     <ColumnDefinition Width="80"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="BrainstaRT" FontSize="60" HorizontalAlignment="Center" VerticalAlignment="Top"></Label>
-                <Image Grid.Column="1" Height="80" Width="80" HorizontalAlignment="Right" Source="{StaticResource BrainstartWhite}"/>
+                <Image Grid.Column="1" Height="100" Width="100" HorizontalAlignment="Right" Source="{StaticResource BrainstartWhite}"/>
             </Grid>
             <Label Name="lblStepName" Grid.Row="1" HorizontalAlignment="Center" FontSize="16"></Label>
             <TabControl Grid.Row="2" Name="tabMain">
@@ -61,24 +61,24 @@
                                     <RowDefinition></RowDefinition>
                                     <RowDefinition Height="30"></RowDefinition>
                                 </Grid.RowDefinitions>
-                                
-                                 <GroupBox Grid.Row="0" Header="Выберите протокол записи:" FontSize="16">
+
+                                <GroupBox Grid.Row="0" Header="Выберите протокол калибровки:" FontSize="16">
                                     <ListBox Name="lbScenarios" SelectionChanged="lbScenarios_SelectionChanged"></ListBox>
-                                 </GroupBox>
-                                
+                                </GroupBox>
+
                                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button Name="btnEditScenario" Content="Редакт." Margin="0, 0, 5, 0" Width="80" Click="btnEditScenario_Click" IsEnabled="False"></Button>
                                     <Button Name="btnNewScenario" Content="Новый" Margin="0, 0, 5, 0" Width="80" Click="btnNewScenario_Click"></Button>
                                     <Button Name="btnDeleteScenario" Content="Удалить" Margin="0, 0, 0, 0" Width="80" Click="btnDeleteScenario_Click"></Button>
                                 </StackPanel>
-                            </Grid>                            
+                            </Grid>
                             <GridSplitter Grid.Column="1" Width="3"></GridSplitter>
                             <ListBox Grid.Column="2" Name="lbProtocolDetails">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <DockPanel HorizontalAlignment="Center">
-                                        <Label BorderThickness="1" Content="{Binding Description}" HorizontalAlignment="Center"></Label>
-                                            
+                                            <Label BorderThickness="1" Content="{Binding Description}" HorizontalAlignment="Center"></Label>
+
                                         </DockPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -98,6 +98,89 @@
                     <TabItem.Header>
                         <Image Height="20" Width="20" Source="{StaticResource ArrowGreen}"/>
                     </TabItem.Header>
+                    <TabItem.Content>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="350"></ColumnDefinition>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <Button Content="Показать график исходных данных" Margin="5, 5, 5, 5" Height="25"/>
+                                <GroupBox Header="Параметры пространственного фильтра">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <GroupBox Grid.Row="0" Header="Тип фильтра:">
+                                            <ComboBox Name="cbSpatialFilterType" SelectedIndex="0">
+                                                <ComboBoxItem>ICA</ComboBoxItem>
+                                            </ComboBox>
+                                        </GroupBox>
+                                        <GroupBox Grid.Row="1" Header="Нижняя граница частот (Гц):">
+                                            <TextBox Name="tbHighPassFilter" Text="2.0"/>
+                                        </GroupBox>
+                                        <GroupBox Grid.Row="2" Header="Верхняя граница частот (Гц):">
+                                            <TextBox Name="tbLowPassFilter" Text="40.0"/>
+                                        </GroupBox>
+                                        <StackPanel Grid.Row="3"  Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button Name="btnChangeSpatialFilterParameters" Height="25" Content="Изменить" Margin="0, 3, 2, 0"></Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="Параметры временного фильтра" Margin="0, 5, 0, 5">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <GroupBox Grid.Row="0" Header="Тип фильтра">
+                                            <ComboBox Name="cbTemporalFilterType" SelectedIndex="0">
+                                                <ComboBoxItem>Kalman</ComboBoxItem>
+                                            </ComboBox>
+                                        </GroupBox>
+                                        <CheckBox Grid.Row="1" Name="cbAutoCentralFreq" Content="Автоматически найти центральную частоту" IsChecked="True" Margin="0, 5, 5, 5" Checked="cbAutoCentralFreq_Checked" Unchecked="cbAutoCentralFreq_Unchecked"/>
+                                        <GroupBox Grid.Row="2" Name="gbAutoCentralFreq" Header="Центральная частота (Гц):" Visibility="Hidden">
+                                            <TextBox x:Name="tbCentralFreqVal" Text="" IsEnabled="False"/>
+                                        </GroupBox>
+                                        <GroupBox Grid.Row="2" Name="gbExactCentralFreq" Header="Тип ритма:">
+                                            <ComboBox Name ="cbRythmType" SelectedValuePath="Content" SelectedIndex="0">
+                                                <ComboBoxItem Content="Alpha"/>
+                                            </ComboBox>
+                                        </GroupBox>
+                                    </Grid>                                    
+                                </GroupBox>
+                            </StackPanel>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <GroupBox Grid.Row="0" Header="Вид:">
+                                    <StackPanel Orientation="Horizontal">
+                                        
+                                        <RadioButton Name="rbTimeSeries" Content="Временная шкала" Margin="3, 0, 5, 0" IsChecked="True" Checked="rbTimeSeries_Checked"></RadioButton>
+                                        <RadioButton Name="rbSpectrum" Content="Спектр" Checked="rbSpectrum_Checked"></RadioButton>
+                                    </StackPanel>
+                                </GroupBox>
+                                <ListBox Grid.Row="1" x:Name="lbPlots">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Height="200">
+                                                <RadioButton IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" GroupName="One"></RadioButton>
+                                                <Label Content="{Binding ChannelName}" VerticalAlignment="Center"/>
+                                                <Image Source="{Binding ImagePath}"></Image>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            </Grid>
+                        </Grid>
+                    </TabItem.Content>
                 </TabItem>
                 <TabItem Name="tab4" Background="White"  Width="80">
                     <TabItem.Header>
@@ -112,14 +195,14 @@
                             <StackPanel Grid.Column="0" Orientation="Vertical">
                                 <GroupBox Header="Режим тренинга" Margin="0, 0, 0, 5" FontSize="16">
                                     <StackPanel Orientation="Vertical">
-                                        <RadioButton IsChecked="True">Концентрация</RadioButton>
-                                        <RadioButton>Релаксация</RadioButton>
+                                        <RadioButton Name="rbPenguin" IsChecked="True" GroupName="Games">Концентрация</RadioButton>
+                                        <RadioButton Name="rbFontain" GroupName="Games">Релаксация</RadioButton>
                                     </StackPanel>
                                 </GroupBox>
                                 <GroupBox Header="Режим визуализации" FontSize="16">
                                     <StackPanel Orientation="Vertical">
                                         <RadioButton IsChecked="True">Реактивный пингвин</RadioButton>
-                                        <RadioButton>Что-то ещё</RadioButton>
+                                        <RadioButton>Фонтан</RadioButton>
                                     </StackPanel>
                                 </GroupBox>
                             </StackPanel>
@@ -131,6 +214,6 @@
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Name="btnNextStep" Content="Далее" Width="80" Margin="0, 5, 5, 5" Click="NextStep_Click"></Button>
             </StackPanel>
-            </Grid>
+        </Grid>
     </Grid>
 </Window>
