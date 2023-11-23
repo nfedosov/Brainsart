@@ -12,6 +12,8 @@ namespace AlphaTraining
 
         private string _imageSpectrumPath;
 
+        private string _imageTopographyPath;
+
         private bool _isTemporalView;
 
         public PlotView(int Number)
@@ -19,6 +21,8 @@ namespace AlphaTraining
             _imageTemporalPath = Path.GetFullPath(string.Format(".\\Data\\temp\\Timeseries_{0}.png", Number));
 
             _imageSpectrumPath = Path.GetFullPath(string.Format(".\\Data\\temp\\Spectrum_{0}.png", Number));
+
+            _imageTopographyPath = Path.GetFullPath(string.Format(".\\Data\\temp\\filter_{0}.png", Number));
 
             _isTemporalView = true;
 
@@ -58,6 +62,14 @@ namespace AlphaTraining
             get
             {
                 return _channelName;
+            }
+        }
+
+        public string TopographyPath
+        {
+            get
+            {
+                return _imageTopographyPath;
             }
         }
 

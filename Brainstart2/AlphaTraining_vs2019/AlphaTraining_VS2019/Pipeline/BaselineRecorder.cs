@@ -68,7 +68,7 @@ namespace AlphaTraining
                         startInfo = new ProcessStartInfo();
                         startInfo.FileName = SystemVariables.Instance.PythonPath;
                         startInfo.Arguments = @"./Data/scripts/CreateTimeSeriesPlot.py "
-                        + argument + " "
+                        + _recordingFilename + " "
                         + _mainWindow.GetSpatialFilerLowerFreq() + " "
                         + _mainWindow.GetSpatialFilerHighFreq();
 

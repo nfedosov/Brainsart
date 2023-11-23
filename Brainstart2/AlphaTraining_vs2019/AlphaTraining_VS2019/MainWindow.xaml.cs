@@ -337,5 +337,10 @@ namespace AlphaTraining
                 gbExactCentralFreq.Visibility = Visibility.Hidden;
             }
         }
+
+        private void btnPlotBaseline_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -105,7 +105,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Orientation="Vertical">
-                                <Button Content="Показать график исходных данных" Margin="5, 5, 5, 5" Height="25"/>
+                                <Button x:Name="btnPlotBaseline" Content="Показать график исходных данных" Margin="5, 5, 5, 5" Height="25" Click="btnPlotBaseline_Click"/>
                                 <GroupBox Header="Параметры пространственного фильтра">
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -173,6 +173,7 @@
                                         <StackPanel Orientation="Horizontal" Height="200">
                                                 <RadioButton IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" GroupName="One"></RadioButton>
                                                 <Label Content="{Binding ChannelName}" VerticalAlignment="Center"/>
+                                                <Image Source="{Binding TopographyPath}" Height="100"></Image>
                                                 <Image Source="{Binding ImagePath}"></Image>
                                         </StackPanel>
                                     </DataTemplate>

@@ -231,8 +231,7 @@ class TopographicMapCanvas(FigureCanvas):
                                              linewidth=0,
                                              markersize=3))
         
-        #fig = a.imshow(data)
-        #fig.savefig('my_figure.png')
+        plt.savefig('topomap.png', dpi=96)
         
         if central_text is not None:
             self.axes.text(0, 0, central_text, horizontalalignment='center', verticalalignment='center')

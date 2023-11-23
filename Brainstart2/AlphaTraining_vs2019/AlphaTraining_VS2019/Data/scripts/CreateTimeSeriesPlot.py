@@ -4,6 +4,12 @@ import numpy as np
 import scipy.signal as sn
 import pickle
 import mne
+from mne.channels import make_standard_montage
+from matplotlib.figure import Figure
+try:
+    from mne.viz import plot_topomap
+except ImportError:
+    pass
 
 def load_eeg_data_from_file(filename):
     file = open(filename, "rb")
@@ -117,7 +123,7 @@ def create_spectrum_plots(eeg_data, exp_info, filters, low_freq = 2, high_freq =
     duration1 = exp_info['blocks']['Cond1']['duration']
     duration2 = exp_info['blocks']['Cond2']['duration']
     srate = eeg_data.info['sfreq']
-    N_rows = len(eeg_data.info['ch_names'])
+    N_channels = len(eeg_data.info['ch_names'])
 
     raw_cond1 = mne.Epochs(eeg_data,events[0], tmin = 0, tmax = duration1-5.0, event_id=events[1][exp_info['blocks']['Cond1']['message']], baseline = None)
     raw_cond2 = mne.Epochs(eeg_data,events[0], tmin = 5.0, tmax = duration2, event_id=events[1][exp_info['blocks']['Cond2']['message']],baseline = None)
@@ -135,11 +141,14 @@ def create_spectrum_plots(eeg_data, exp_info, filters, low_freq = 2, high_freq =
     ind_to_plot = np.where((freqs < high_freq) * (freqs > low_freq))[0]
     
     my_dpi=96
-    for i in range(N_rows):
+    for i in range(N_channels):
         # собственно отрисовка графиков
         plt.clf()
-        plt.plot(freqs[ind_to_plot], np.log10(pxx1[i,ind_to_plot]), color='r')
-        plt.plot(freqs[ind_to_plot], np.log10(pxx2[i,ind_to_plot]), color='g')
+
+        # Пока костыль! разобраться с кодировкой и брать описание условия из параметров протокола
+        plt.plot(freqs[ind_to_plot], np.log10(pxx1[i,ind_to_plot]), color='r', label="Глаза открыты")
+        plt.plot(freqs[ind_to_plot], np.log10(pxx2[i,ind_to_plot]), color='g', label="Глаза закрыты")
+        plt.legend()
         plt.savefig(f'Data\\temp\\Spectrum_{i}.png', dpi=my_dpi)
                             
 
@@ -156,10 +165,49 @@ def create_time_series_plots(eeg_data, filters):
         plt.plot(x, time_series[i,:], linewidth=1 )
         plt.savefig(f'Data\\temp\\Timeseries_{i}.png', dpi=my_dpi)
 
+def create_topomap_plot(exp_settings, data, plot_type, index):
+   
+    montage = make_standard_montage("standard_1005")
+    all_pos = montage.get_positions()['ch_pos']
+    
+    channel_names = exp_settings['channel_names']
+
+    pos = np.zeros((len(channel_names),3))
+    
+    names = ['O1','O2','P3','P4']
+    
+    for i,name in enumerate(names):
+        pos[i] = all_pos[name]
+        
+    pos = pos[:,:2]
+
+    data = np.array(data)
+    
+    show_names = []
+    mask = np.array([name.upper() in show_names for name in names]) if names else None
+    v_min, v_max = None, None
+    if (data == data[0]).all():
+        data[0] += 0.1
+        data[1] -= 0.1
+        v_min, v_max = -1, 1
+
+    fig = Figure(figsize=(5, 4), dpi=96)
+    axes = fig.add_subplot(111)
+    
+    a, b = plot_topomap(data, pos, axes=axes, show=False, contours=0, names=names,
+                        mask=mask,
+                        mask_params=dict(marker='o',
+                                         markerfacecolor='w',
+                                         markeredgecolor='w',
+                                         linewidth=0,
+                                         markersize=3))
+    
+
+    fig.savefig(f'Data\\temp\\{plot_type}_{index}.png')    
+
 def plot_data(filename, fit_filter = False):
 
-
-    eeg_data, exp_settings = load_eeg_data_from_file(filename)   
+    eeg_data, exp_settings = load_eeg_data_from_file(filename)
 
     n_channels = len(eeg_data.info['ch_names'])
 
@@ -168,10 +216,15 @@ def plot_data(filename, fit_filter = False):
     else:
         filters = np.eye(n_channels)
 
+    for ind in range(0, n_channels):
+        create_topomap_plot(exp_settings, np.linalg.pinv(filters)[:,ind], 'filter', ind)
+
     create_time_series_plots(eeg_data,  filters)
 
     create_spectrum_plots(eeg_data, exp_settings, filters)
+    
 
 if __name__ == '__main__':    
-    if(len(sys.argv) > 1):
+    if(len(sys.argv) > 1):        
         plot_data(sys.argv[1], True)
+        pass
