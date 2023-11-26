@@ -1,6 +1,7 @@
 ﻿using AlphaTraining.Pipeline;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -18,7 +19,8 @@ namespace AlphaTraining
     /// </summary>
     public partial class MainWindow : Window
     {
-        string _userName = string.Empty;
+        UserCard _userCard;
+        string _sessionDate = string.Empty;
         List<PipelineItem> _steps;
         List<String> _scenarios = new List<String>();
         List<PlotView> _plots = new List<PlotView>();
@@ -110,8 +112,7 @@ namespace AlphaTraining
             }
             else
             {
-                // уйти в закат
-                this.Close();
+                Close();          
             }
 
             return jumpToNextStep;
@@ -171,16 +172,22 @@ namespace AlphaTraining
         // Открытые функции
         //================================================================================
 
-        public void SetUserName(string userName)
+        public void SetUserCard(UserCard userCard)
         {
-            _userName = userName;
+            _userCard = userCard;
+            _sessionDate = DateTime.Now.ToString("dd_MMMM_yyyy");
 
-            Title = "Alpha Training. " + userName;
+            Title = "Alpha Training. " + _userCard.Id;
         }
 
         public string GetUserName()
         {
-            return _userName;
+            return _userCard.Id;
+        }
+
+        public string GetSessionDate()
+        {
+            return _sessionDate;
         }
 
         public string GetSelectedProtocolName()
@@ -340,7 +347,18 @@ namespace AlphaTraining
 
         private void btnPlotBaseline_Click(object sender, RoutedEventArgs e)
         {
+            // Запустить Python-скрипт, который запустит запись согласно меткам в протоколе
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = SystemVariables.Instance.PythonPath;
+            startInfo.Arguments = @"./Data/scripts/PlotBaseline.py " + _steps[_step - 1].GetArguments();
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
 
+            var process = Process.Start(startInfo);
+            if (null != process)
+            {
+                process.WaitForExit();
+            }
         }
     }
 }

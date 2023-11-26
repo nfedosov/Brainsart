@@ -88,6 +88,9 @@
     </Compile>
     <Compile Include="BaselineRecording.xaml.cs" />
     <Compile Include="ConfigurationStep.cs" />
+    <Compile Include="EndOfSession.xaml.cs">
+      <DependentUpon>EndOfSession.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs" />
     <Compile Include="NewUserDialog.xaml.cs" />
     <Compile Include="OptionSelectorWindow.xaml.cs" />
@@ -123,6 +126,9 @@
     <Compile Include="SystemVariables.cs" />
     <Compile Include="UserCard\Transliteration.cs" />
     <Compile Include="UserCard\UserCard.cs" />
+    <Compile Include="UserHistory.xaml.cs">
+      <DependentUpon>UserHistory.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Visualization.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -145,6 +151,10 @@
     <Page Include="BaselineRecording.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EndOfSession.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -169,6 +179,10 @@
     <Page Include="ScenarioMaker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserHistory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -41,7 +41,7 @@ namespace AlphaTraining.Pipeline
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = @".\Data\utils\Brainstart2.exe";
-            startInfo.Arguments = argument + " " + gamePath;
+            startInfo.Arguments = argument + " " + _mainWindow.GetUserName() + " " + gamePath;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             var process = Process.Start(startInfo);
@@ -49,6 +49,8 @@ namespace AlphaTraining.Pipeline
             {
                 process.WaitForExit();
             }
+
+            // TODO запустить скрипт пост-анализа
 
             return false;
             

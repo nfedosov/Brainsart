@@ -10,17 +10,20 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="250"></RowDefinition>
             <RowDefinition Height="155*"></RowDefinition>
-            <RowDefinition Height="54*"></RowDefinition>
+            <RowDefinition Height="65"></RowDefinition>
         </Grid.RowDefinitions>
         <Image Grid.Row="0" Source="{StaticResource BrainstartBlack}"/>
 
         <GroupBox Grid.Row="1" Header="Выберите пользователя или добавьте нового:" FontSize="16">
-        <ListBox   Name ="lbUsersList" Margin="5,5,5,5" MouseDoubleClick="lbUsersList_MouseDoubleClick">
-
-        </ListBox>
-</GroupBox>
-        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,0,0,0" Grid.RowSpan="2">
-            <Button Name ="btnAnalysis" Content="Продолжить" Margin="15, 5, 15, 0" Height="35" FontSize="16" Click="btnAnalysis_Click"></Button>
+            <ListBox   Name ="lbUsersList" Margin="5,5,5,5" SelectionChanged="lbUsersList_SelectionChanged">
+            </ListBox>
+        </GroupBox>
+        <StackPanel Name="spNewUser" Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" Grid.RowSpan="2" HorizontalAlignment="Center" Visibility="Hidden">
+            <Button Name ="btnAnalysis" Content="Продолжить" Margin="15, 0, 15, 0" Width="150" Height="35" FontSize="16" Click="btnAnalysis_Click"></Button>
+        </StackPanel>
+        <StackPanel Name="spExisingUser" Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,0" Grid.RowSpan="2" HorizontalAlignment="Center">
+            <Button Name ="btnHistory" Content="История сенасов" Margin="15, 0, 15, 0" Width="150" Height="35" FontSize="16" Click="btnHistory_Click"></Button>
+            <Button Name ="btnNewSession" Content="Новый сеанс" Margin="15, 0, 15, 0" Width="150" Height="35" FontSize="16" Click="btnAnalysis_Click"></Button>
         </StackPanel>
     </Grid>
 </Window>

@@ -5,24 +5,17 @@ using System.Windows.Documents;
 
 namespace AlphaTraining
 {
-    public enum ApplicationMode
-    {
-        None,
 
-        NewUser,
-
-        StaticAnalysis
-    }
 
     /// <summary>
     /// Interaction logic for OptionSelectorWindow.xaml
     /// </summary>
     public partial class OptionSelectorWindow : Window
     {
-        UserCard _userCard;
+        UserCard _userCard = null;
         List<string> _usersList = new List<string>();
 
-        ApplicationMode _applicationMode = ApplicationMode.None;
+        AlphaTrainingAction _selectedAction = AlphaTrainingAction.Close;
 
         public OptionSelectorWindow()
         {
@@ -41,25 +34,15 @@ namespace AlphaTraining
 
         private void CreateNewUser()
         {
-            // Показать диалоговое окно ввода имения пользователя
-            NewUserDialog newUserDialog = new NewUserDialog();
-            newUserDialog.ShowDialog();
-
-            // В случае успеха сохранить имя пользователя
-            if(true == newUserDialog.DialogResult)
-            {
-                _userCard = newUserDialog.GetUrerCard();
-
-                _applicationMode = ApplicationMode.NewUser;
-                Close();
-            }
+            _selectedAction = AlphaTrainingAction.NewUser;
+            Close();
         }
 
-        private void LoadUserCard(string userId)
+        private void LoadUserCard()
         {
+            string userId = _usersList[lbUsersList.SelectedIndex];
             _userCard = UserCard.Load(userId);
 
-            _applicationMode = ApplicationMode.NewUser;
             Close();
         }
 
@@ -68,19 +51,14 @@ namespace AlphaTraining
             ChooseOption();
         }
 
-        public ApplicationMode GetApplicationMode()
+        public AlphaTrainingAction GetSelectedAction()
         {
-            return _applicationMode;
+            return _selectedAction;
         }
 
-        public string GetUserName()
+        public UserCard GetUserCard()
         {
-            return _userCard.Id;
-        }
-
-        private void lbUsersList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            ChooseOption();
+            return _userCard;
         }
 
         private void ChooseOption()
@@ -95,7 +73,41 @@ namespace AlphaTraining
                 else
                 {
                     // Загрузить карточку выбранного пользователя
-                    LoadUserCard(_usersList[lbUsersList.SelectedIndex]);
+                    NewSession();
+                }
+            }
+        }
+
+        private void NewSession()
+        {
+            LoadUserCard();
+            _selectedAction = AlphaTrainingAction.MainWindow;
+
+            this.Hide();
+            //Close();
+        }
+
+        private void btnHistory_Click(object sender, RoutedEventArgs e)
+        {
+            LoadUserCard();
+            _selectedAction = AlphaTrainingAction.Results;
+            Close();
+        }
+
+        private void lbUsersList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if ((lbUsersList.SelectedIndex != -1))
+            {
+                // Если выбран существующий пользователь, показать кнопки просмотра истории сеансов
+                if (lbUsersList.SelectedIndex == (lbUsersList.Items.Count - 1))
+                {
+                    spExisingUser.Visibility = Visibility.Hidden;
+                    spNewUser.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    spExisingUser.Visibility = Visibility.Visible;
+                    spNewUser.Visibility = Visibility.Hidden;
                 }
             }
         }

@@ -137,10 +137,11 @@
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
                                         <GroupBox Grid.Row="0" Header="Тип фильтра">
                                             <ComboBox Name="cbTemporalFilterType" SelectedIndex="0">
-                                                <ComboBoxItem>Kalman</ComboBoxItem>
+                                                <ComboBoxItem>Фильтр Калмана</ComboBoxItem>
                                             </ComboBox>
                                         </GroupBox>
                                         <CheckBox Grid.Row="1" Name="cbAutoCentralFreq" Content="Автоматически найти центральную частоту" IsChecked="True" Margin="0, 5, 5, 5" Checked="cbAutoCentralFreq_Checked" Unchecked="cbAutoCentralFreq_Unchecked"/>
@@ -149,9 +150,23 @@
                                         </GroupBox>
                                         <GroupBox Grid.Row="2" Name="gbExactCentralFreq" Header="Тип ритма:">
                                             <ComboBox Name ="cbRythmType" SelectedValuePath="Content" SelectedIndex="0">
-                                                <ComboBoxItem Content="Alpha"/>
+                                                <ComboBoxItem Content="Альфа"/>
                                             </ComboBox>
                                         </GroupBox>
+                                        <Expander Grid.Row="3" Header="Дополнительные параметры" IsExpanded="False">
+                                            <StackPanel Orientation="Vertical">
+                                                <GroupBox  Header="Отношение задержки к качеству сигнала">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Slider Name="DelayNoiseRatio" Width="290" Minimum="0" Maximum="1" Value="0" IsSnapToTickEnabled="True" TickFrequency="0.1"/>
+                                                        <TextBox Width="30" IsReadOnly="True" Text="{Binding ElementName=DelayNoiseRatio, Path=Value}"/>
+                                                    </StackPanel>
+                                                </GroupBox>
+                                                <GroupBox Header="Префильтрация сигнала">
+                                                    <CheckBox Name="cbPrefilter" Content="Включена" IsChecked="False"></CheckBox>
+                                                </GroupBox>
+                                            </StackPanel>
+                                        </Expander>
+                                       
                                     </Grid>                                    
                                 </GroupBox>
                             </StackPanel>

@@ -43,7 +43,10 @@ namespace AlphaTraining
             // В качестве аргумента должно прийти имя файла с baseline
 
             resultFileName = Path.GetFullPath(
-                String.Format(@"./Data/users/{0}/config.txt", _mainWindow.GetUserName(), DateTime.Now.ToString("dd.MM.yyyy_H.mm")));
+                String.Format(@"./Data/users/{0}/{1}/config_{2}.txt",
+                _mainWindow.GetUserName(),
+                _mainWindow.GetSessionDate(),
+                DateTime.Now.ToString("dd.MM.yyyy_H.mm")));
 
 
             ProcessStartInfo startInfo = new ProcessStartInfo();

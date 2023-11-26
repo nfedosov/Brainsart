@@ -35,13 +35,25 @@ namespace AlphaTraining
         public override bool Run(string argument)
         {
             // в качестве аргумента пришел
-            string scenario = argument;
+            string protocolFile = argument;
+
+            // Создать каталог нового сеанса
+            string sessionDirectory = Path.GetFullPath(
+                String.Format(@"./Data/users/{0}/{1}",
+                _mainWindow.GetUserName(),
+                _mainWindow.GetSessionDate()));
+
+            if (false == Directory.Exists(sessionDirectory))
+            {
+                Directory.CreateDirectory(sessionDirectory);
+            }
 
             // сгенерировать имя выходного файла, который будет содержать baseline
-            _recordingFilename = Path.GetFullPath(
-                String.Format(@"./Data/users/{0}/baseline_{1}.pickle", _mainWindow.GetUserName(), DateTime.Now.ToString("dd.MM.yyyy_H.mm")));
+            _recordingFilename = String.Format(@"{0}/baseline_{1}.pickle",
+                sessionDirectory,
+                DateTime.Now.ToString("dd.MM.yyyy_H.mm"));
             
-            using (StreamReader sr = new StreamReader(File.OpenRead(scenario)))
+            using (StreamReader sr = new StreamReader(File.OpenRead(protocolFile)))
             {
                 List<ProtocolBlock> blocks = JsonSerializer.Deserialize<List<ProtocolBlock>>(sr.ReadToEnd());
 
@@ -50,7 +62,7 @@ namespace AlphaTraining
                     // Запустить Python-скрипт, который запустит запись согласно меткам в протоколе
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = SystemVariables.Instance.PythonPath;
-                    startInfo.Arguments = @"./Data/scripts/record_baseline.py " + scenario + " " + _recordingFilename;
+                    startInfo.Arguments = @"./Data/scripts/record_baseline.py " + protocolFile + " " + _recordingFilename;
                     startInfo.UseShellExecute = false;
                     startInfo.CreateNoWindow = true;
 

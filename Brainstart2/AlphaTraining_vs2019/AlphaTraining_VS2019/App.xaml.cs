@@ -3,6 +3,24 @@ using System.Windows;
 
 namespace AlphaTraining
 {
+    public enum AlphaTrainingAction
+    {
+        // Главное окно выбора опции
+        OptionSelection,
+
+        // Окно заполнния данных нового пользователя
+        NewUser,
+
+        // Окно нового сеанса
+        MainWindow,
+
+        // Окно просмотра результатов
+        Results,
+
+        // Выход из приложения
+        Close,
+    }
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -16,33 +34,79 @@ namespace AlphaTraining
                 MessageBox.Show("Не найден интерпретатор Python!");
                 return;
             }
+                        
+            
 
-            MainWindow wnd = new MainWindow();
-
-            // Сначала показать окно выбора режима работы
-            OptionSelectorWindow optionSelectorWindow = new OptionSelectorWindow();
-            optionSelectorWindow.ShowDialog();
-
-            // Если выбран режим записи нового пользователя, сохранить введенное имя пользователя
-            switch(optionSelectorWindow.GetApplicationMode())
+            AlphaTrainingAction currentAction = AlphaTrainingAction.OptionSelection;
+            UserCard userCard = null;
+            
+            do
             {
-                case ApplicationMode.NewUser:
-                                        
-                    wnd.SetUserName(optionSelectorWindow.GetUserName());
+                OptionSelectorWindow optionSelectorWindow = new OptionSelectorWindow();
+                NewUserDialog newUserDialog = new NewUserDialog();
+                MainWindow wnd = new MainWindow();
 
-                    if (e.Args.Length == 1)
-                    {
-                        int stepFromCmd = Convert.ToInt32(e.Args[0]);
-                        if (stepFromCmd > 0)
+                switch (currentAction)
+                {
+                    case AlphaTrainingAction.OptionSelection:
+                        // Сначала показать окно выбора режима работы
+                        
+                        optionSelectorWindow.ShowDialog();
+
+                        // Потом определить, что выбрал пользователь
+                        currentAction = optionSelectorWindow.GetSelectedAction();
+
+                        // получить карточку выбранного пользователя, если есть
+                        userCard = optionSelectorWindow.GetUserCard();
+                        break;
+
+                    case AlphaTrainingAction.NewUser:
+
+                        // Показать окно добавления нового пользователя
+                        newUserDialog.ShowDialog();
+                        if (true == newUserDialog.DialogResult)
                         {
-                            wnd.JumpToStep(stepFromCmd - 1);
+                            // В случае завершения ввода данных пользователя принудительно переходим к новому сеансу пользователя
+                            userCard = newUserDialog.GetUrerCard();
+                            currentAction = AlphaTrainingAction.MainWindow;
                         }
-                    }
+                        else
+                        {
+                            // В противном случае переходим в окно выбора опции
+                            currentAction = AlphaTrainingAction.OptionSelection;
+                        }
 
-                    wnd.Show();
+                        break;
 
-                    break;
-            }            
+                    case AlphaTrainingAction.MainWindow:
+                        
+                        wnd.SetUserCard(userCard);
+                        wnd.ShowDialog();
+
+                        // По закрытию окна узнать дальнейшие действия пользователя
+                        // Показать завершающее диалоговое окно 
+                        EndOfSessionDialog endOfSessionDialog = new EndOfSessionDialog();
+                        endOfSessionDialog.ShowDialog();
+
+                        currentAction = endOfSessionDialog.GetAction();
+                        break;
+
+                    case AlphaTrainingAction.Results:
+                        UserHistory userHistory = new UserHistory();
+                        userHistory.SetUserCard(userCard);
+                        userHistory.ShowDialog();
+
+                        // По завершению просмотра результатов всегда возвращаемся к основному окну
+                        currentAction = AlphaTrainingAction.OptionSelection;
+                        break;
+
+                    case AlphaTrainingAction.Close:
+                        break;
+                }
+
+            } while (currentAction != AlphaTrainingAction.Close);
+
+            Shutdown();
         }
     }
 }
