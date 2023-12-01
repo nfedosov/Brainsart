@@ -12,10 +12,29 @@ namespace AlphaTraining
     {
         UserCard _userCard;
         List<string> _sessionsList = new List<string>();
+        List<PlotPost> _postplots = new List<PlotPost>();
+
+
         public UserHistory()
         {
             InitializeComponent();
+            LoadPostPlots();
         }
+
+
+
+        public void LoadPostPlots()
+        {
+            _postplots.Add(new PlotPost());
+            
+
+            lbPost.ItemsSource = _postplots;
+            lbPost.Items.Refresh();
+
+
+        }
+
+
 
         internal void SetUserCard(UserCard userCard)
         {
@@ -35,4 +54,8 @@ namespace AlphaTraining
             lbSessionsList.ItemsSource = _sessionsList;
         }
     }
+
+
+
+
 }

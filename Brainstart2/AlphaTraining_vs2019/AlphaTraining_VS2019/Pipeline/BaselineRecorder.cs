@@ -62,6 +62,8 @@ namespace AlphaTraining
                     // Запустить Python-скрипт, который запустит запись согласно меткам в протоколе
                     ProcessStartInfo startInfo = new ProcessStartInfo();
                     startInfo.FileName = SystemVariables.Instance.PythonPath;
+                    startInfo.FileName = "C:/Program Files/Spyder/Python/python.exe";
+
                     startInfo.Arguments = @"./Data/scripts/record_baseline.py " + protocolFile + " " + _recordingFilename;
                     startInfo.UseShellExecute = false;
                     startInfo.CreateNoWindow = true;
@@ -79,6 +81,7 @@ namespace AlphaTraining
                         // Запускаем следующий скрипт, которрый нарисует графики
                         startInfo = new ProcessStartInfo();
                         startInfo.FileName = SystemVariables.Instance.PythonPath;
+                        startInfo.FileName = "C:/Program Files/Spyder/Python/python.exe";
                         startInfo.Arguments = @"./Data/scripts/CreateTimeSeriesPlot.py "
                         + _recordingFilename + " "
                         + _mainWindow.GetSpatialFilerLowerFreq() + " "
