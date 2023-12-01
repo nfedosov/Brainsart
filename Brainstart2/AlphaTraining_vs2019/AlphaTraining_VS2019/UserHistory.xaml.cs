@@ -31,6 +31,9 @@ namespace AlphaTraining
             lbPost.ItemsSource = _postplots;
             lbPost.Items.Refresh();
 
+            lbPost2.ItemsSource = _postplots;
+            lbPost2.Items.Refresh();
+
 
         }
 
