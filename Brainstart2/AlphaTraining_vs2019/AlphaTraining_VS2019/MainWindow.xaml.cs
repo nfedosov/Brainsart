@@ -360,5 +360,10 @@ namespace AlphaTraining
                 process.WaitForExit();
             }
         }
+
+        private void lbPlots_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

@@ -51,6 +51,8 @@ namespace AlphaTraining
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = SystemVariables.Instance.PythonPath;
+            startInfo.FileName = "C:/Program Files/Spyder/Python/python.exe";
+
             startInfo.Arguments = @"./Data/scripts/FitKalmanFilter.py "
             + argument + " "
             + _mainWindow.GetSelectedPlot().ToString() + " "

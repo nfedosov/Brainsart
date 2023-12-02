@@ -100,6 +100,7 @@
     <Compile Include="Pipeline\FilterConfigurator.cs" />
     <Compile Include="Pipeline\PipelineItem.cs" />
     <Compile Include="Pipeline\TerminalStep.cs" />
+    <Compile Include="PlotPost.cs" />
     <Compile Include="PlotView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

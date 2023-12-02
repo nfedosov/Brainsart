@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AlphaTraining"
         mc:Ignorable="d"
-        Title="История сеансов" Height="800" Width="1120">
+        Title="История сеансов" Height="650" Width="1020">
     <Grid Margin="5, 5, 5, 5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="400"></ColumnDefinition>
@@ -16,45 +16,63 @@
                 <RowDefinition Height="400"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            
+
             <GroupBox Header="Информация о пользователе"  FontSize="14">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="75"></RowDefinition>
-                    <RowDefinition Height="75"></RowDefinition>
-                    <RowDefinition Height="75"></RowDefinition>
-                    <RowDefinition Height="75"></RowDefinition>
-                    <RowDefinition Height="75"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0" Header="Имя" Margin="10,10,10,10" FontSize="14"> 
-                    <Label Name="lblUserName" FontSize="14" Content="Tktyf">
-                    </Label>
-                </GroupBox>
-                <GroupBox Grid.Row="1" Header="Фамилия" Margin="10,10,10,10">
-                    <Label Name="lblUserSurname" FontSize="14">
-                    </Label>
-                </GroupBox>
-                <GroupBox Grid.Row="2" Header="Пол" Margin="10,10,10,10"  FontSize="14">
-                    <Label Name="lblUserGender"  FontSize="14">
-                    </Label>
-                </GroupBox>
-                <GroupBox Grid.Row="3" Header="Возраст" Margin="10,10,10,10"  FontSize="14">
-                    <Label Name="lblUserAge" FontSize="14">
-                    </Label>
-                </GroupBox>
-                <GroupBox Grid.Row="4" Header="Идентификатор" Margin="10,10,10,10">
-                    <Label Name="lblUserId" FontSize="14">
-                    </Label>
-                </GroupBox>
-            </Grid>            
-        </GroupBox>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="75"></RowDefinition>
+                        <RowDefinition Height="75"></RowDefinition>
+                        <RowDefinition Height="75"></RowDefinition>
+                        <RowDefinition Height="75"></RowDefinition>
+                        <RowDefinition Height="75"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <GroupBox Grid.Row="0" Header="Имя" Margin="10,10,10,10" FontSize="14">
+                        <Label Name="lblUserName" FontSize="14" Content="Tktyf">
+                        </Label>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Фамилия" Margin="10,10,10,10">
+                        <Label Name="lblUserSurname" FontSize="14">
+                        </Label>
+                    </GroupBox>
+                    <GroupBox Grid.Row="2" Header="Пол" Margin="10,10,10,10"  FontSize="14">
+                        <Label Name="lblUserGender"  FontSize="14">
+                        </Label>
+                    </GroupBox>
+                    <GroupBox Grid.Row="3" Header="Возраст" Margin="10,10,10,10"  FontSize="14">
+                        <Label Name="lblUserAge" FontSize="14">
+                        </Label>
+                    </GroupBox>
+                    <GroupBox Grid.Row="4" Header="Идентификатор" Margin="10,10,10,10">
+                        <Label Name="lblUserId" FontSize="14">
+                        </Label>
+                    </GroupBox>
+                </Grid>
+            </GroupBox>
 
-        <GroupBox Grid.Row="1" Header="История сеансов"  FontSize="14">
-            <ListBox Name="lbSessionsList">
+            <GroupBox Grid.Row="1" Header="История сеансов"  FontSize="14">
+                <ListBox Name="lbSessionsList">
 
-            </ListBox>
-        </GroupBox>
+                </ListBox>
+            </GroupBox>
         </Grid>
+        <ListBox x:Name="lbPost" Margin="10,10,10.333,294.667" Grid.Column="1">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{Binding ImagePath}" Height="250"></Image>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox x:Name="lbPost2" Margin="10,271,10.333,9.667" Grid.Column="1">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{Binding Image2Path}" Height="250"></Image>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>

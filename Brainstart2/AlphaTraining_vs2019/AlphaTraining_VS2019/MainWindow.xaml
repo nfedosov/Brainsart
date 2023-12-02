@@ -52,11 +52,12 @@
                     <TabItem.Content>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="269*"></ColumnDefinition>
+                                <ColumnDefinition Width="160*"/>
                                 <ColumnDefinition Width="3"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="429*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0" >
+                            <Grid Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0.333,0" >
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>
                                     <RowDefinition Height="30"></RowDefinition>
@@ -72,8 +73,8 @@
                                     <Button Name="btnDeleteScenario" Content="Удалить" Margin="0, 0, 0, 0" Width="80" Click="btnDeleteScenario_Click"></Button>
                                 </StackPanel>
                             </Grid>
-                            <GridSplitter Grid.Column="1" Width="3"></GridSplitter>
-                            <ListBox Grid.Column="2" Name="lbProtocolDetails">
+                            <GridSplitter Grid.Column="2" Width="3" Grid.ColumnSpan="2" Margin="0,0,429,0"></GridSplitter>
+                            <ListBox Grid.Column="3" Name="lbProtocolDetails" Margin="0.334,0,0,0">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <DockPanel HorizontalAlignment="Center">
@@ -166,8 +167,8 @@
                                                 </GroupBox>
                                             </StackPanel>
                                         </Expander>
-                                       
-                                    </Grid>                                    
+
+                                    </Grid>
                                 </GroupBox>
                             </StackPanel>
                             <Grid Grid.Column="1">
@@ -177,23 +178,23 @@
                                 </Grid.RowDefinitions>
                                 <GroupBox Grid.Row="0" Header="Вид:">
                                     <StackPanel Orientation="Horizontal">
-                                        
+
                                         <RadioButton Name="rbTimeSeries" Content="Временная шкала" Margin="3, 0, 5, 0" IsChecked="True" Checked="rbTimeSeries_Checked"></RadioButton>
                                         <RadioButton Name="rbSpectrum" Content="Спектр" Checked="rbSpectrum_Checked"></RadioButton>
                                     </StackPanel>
                                 </GroupBox>
-                                <ListBox Grid.Row="1" x:Name="lbPlots">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Height="200">
+                                <ListBox Grid.Row="1" x:Name="lbPlots" SelectionChanged="lbPlots_SelectionChanged">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Height="200">
                                                 <RadioButton IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" GroupName="One"></RadioButton>
                                                 <Label Content="{Binding ChannelName}" VerticalAlignment="Center"/>
                                                 <Image Source="{Binding TopographyPath}" Height="100"></Image>
                                                 <Image Source="{Binding ImagePath}"></Image>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </Grid>
                         </Grid>
                     </TabItem.Content>
