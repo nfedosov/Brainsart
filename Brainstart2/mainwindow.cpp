@@ -42,9 +42,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-    demoButton = new QPushButton("Start Demo", this);
-    setKalmanManual = new QPushButton("Set Kalman Params", this);
-    findStreams = new QPushButton("find streams",this);
+    demoButton = new QPushButton("Начать", this);
+    setKalmanManual = new QPushButton(trUtf8("Параметры фильтра"), this);
+    findStreams = new QPushButton(trUtf8("Найти lsl-потоки"),this);
 
 
     lineEdit1 = new QLineEdit(this);
@@ -172,7 +172,7 @@ void MainWindow::ondemoButtonclicked()
 
 
 
-    demoButton->setText("clicked!");
+    demoButton->setText("Сеанс запущен!");
 
 
 }

@@ -35,9 +35,9 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
     this->Nch = Nch;
     this->srate = srate;
     resize(800, 400);
-    startButton = new QPushButton("Start Tracking", this);
-    recordButton = new QPushButton("Start record", this);
-    showProcessedRaw = new QPushButton("Show processed", this);
+    startButton = new QPushButton("Начать мониторинг", this);
+    recordButton = new QPushButton("Запись", this);
+    showProcessedRaw = new QPushButton("Обработано", this);
 
     scale = 1.0;
     zoomInButton = new QToolButton(this);
@@ -87,7 +87,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
     zoomRightButton->setStyleSheet("QToolButton { border: none; }");
 
 
-    QIcon recIcon("./Data/icons/record.png");
+    QIcon recIcon(".\\Data\\icons\\record.png");
     recordButton->setIcon(recIcon);
 
 
@@ -120,8 +120,8 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
 
     QFont font("Arial", 12); //QFont::Bold);
 
-    QLabel *bp_low_label = new QLabel("Low");
-    QLabel *bp_high_label = new QLabel("High");
+    QLabel *bp_low_label = new QLabel("Нижн");
+    QLabel *bp_high_label = new QLabel("Верх");
     QLabel *notch_label = new QLabel("50Hz");
     bp_low_label->setFont(font);
     bp_high_label->setFont(font);
@@ -258,15 +258,15 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
         QLabel *label = new QLabel("");
         if (i == 0)
         {
-            label->setText("Detected rhythm"); // Set the text of the labe
+            label->setText("Обнаруженный ритм"); // Set the text of the labe
         }
         if (i == 1)
         {
-            label->setText("Detected envelope"); // Set the text of the labe
+            label->setText("Обнаруженная огибающая"); // Set the text of the labe
         }
         if (i == 2)
         {
-            label->setText("Detected phase"); // Set the text of the labe
+            label->setText("Обнаруженная фаза"); // Set the text of the labe
         }
         // Customize the label properties
         //label->setAlignment(Qt::AlignH);
@@ -712,7 +712,7 @@ void SignalPlotWin::onrecordButtonclicked()
     {
        //savedata->saveToGDF("C:/Users/Fedosov/Documents/projects/Brainstart/records/trial.gdf");
        savedata->saveToFif(data);
-       recordButton->setText("Start record");
+       recordButton->setText("Начать запись");
        //record_pos = 0;
        isRecorded = false;
     }
@@ -725,7 +725,7 @@ void SignalPlotWin::onrecordButtonclicked()
 
         record_pos = 0;
         isRecorded = true;
-        recordButton->setText("Stop record");
+        recordButton->setText("Остановить запись");
     }
 
 
@@ -737,13 +737,13 @@ void SignalPlotWin::onshowProcessedRaw()
     if (!isShowProcessed)
     {
 
-        showProcessedRaw->setText("Show raw");
+        showProcessedRaw->setText("Получено");
         stackedLayout->setCurrentIndex(1);
         isShowProcessed = true;
     }
     else
     {
-        showProcessedRaw->setText("Show processed");
+        showProcessedRaw->setText("Обработано");
         stackedLayout->setCurrentIndex(0);
         isShowProcessed = false;
     }

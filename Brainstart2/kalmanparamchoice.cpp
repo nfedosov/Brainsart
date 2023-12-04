@@ -13,7 +13,7 @@ KalmanParamChoice::KalmanParamChoice(WhiteKF* kf, QWidget *parent)
 
     this->kf = kf;
 
-    this->setFixedSize(150, 250);
+    this->setFixedSize(250, 250);
 
     this->kf->q = this->kf->default_q;
     this->kf->r = this->kf->default_r;
@@ -22,12 +22,12 @@ KalmanParamChoice::KalmanParamChoice(WhiteKF* kf, QWidget *parent)
     QVBoxLayout *commonlay = new QVBoxLayout(this);
 
     QWidget *freq_empty = new QWidget(this);
-    QLabel *freq_label = new QLabel("Central frequeny");
+    QLabel *freq_label = new QLabel("Центральная частота");
     freqChoice = new QLineEdit(QString::number(this->kf->freq), this);
     //freqChoice->move(50,20);
 
     QWidget *A_empty = new QWidget(this);
-    QLabel *A_label = new QLabel("Damping factor");
+    QLabel *A_label = new QLabel("Коэффициент демпфирования");
     AChoice = new QLineEdit(QString::number(this->kf->A), this);
     //AChoice->move(50,70);
 
@@ -35,12 +35,12 @@ KalmanParamChoice::KalmanParamChoice(WhiteKF* kf, QWidget *parent)
     //srateChoice = new QLineEdit(QString::number(this->kf->srate), this);
     //srateChoice->move(50,120);
     QWidget *r_empty = new QWidget(this);
-    QLabel *r_label = new QLabel("Measurement noise std");
+    QLabel* r_label = new QLabel("Шум иземерения (ст.откл)");
     rChoice = new QLineEdit(QString::number(this->kf->r), this);
     //rChoice->move(50,170);
 
     QWidget *q_empty = new QWidget(this);
-    QLabel *q_label = new QLabel("Process noise std");
+    QLabel *q_label = new QLabel("Шум процесса (ст.откл)");
     qChoice = new QLineEdit(QString::number(this->kf->q), this);
     //qChoice->move(50,220);
 
