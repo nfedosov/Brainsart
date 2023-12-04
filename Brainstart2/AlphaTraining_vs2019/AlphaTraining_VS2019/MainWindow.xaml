@@ -147,7 +147,7 @@
                                         </GroupBox>
                                         <CheckBox Grid.Row="1" Name="cbAutoCentralFreq" Content="Автоматически найти центральную частоту" IsChecked="True" Margin="0, 5, 5, 5" Checked="cbAutoCentralFreq_Checked" Unchecked="cbAutoCentralFreq_Unchecked"/>
                                         <GroupBox Grid.Row="2" Name="gbAutoCentralFreq" Header="Центральная частота (Гц):" Visibility="Hidden">
-                                            <TextBox x:Name="tbCentralFreqVal" Text="" IsEnabled="False"/>
+                                            <TextBox x:Name="tbCentralFreqVal" Text="10.5"/>
                                         </GroupBox>
                                         <GroupBox Grid.Row="2" Name="gbExactCentralFreq" Header="Тип ритма:">
                                             <ComboBox Name ="cbRythmType" SelectedValuePath="Content" SelectedIndex="0">

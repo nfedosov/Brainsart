@@ -331,8 +331,8 @@ namespace AlphaTraining
         {
             if ((gbAutoCentralFreq != null) && (gbExactCentralFreq != null))
             {
-                gbAutoCentralFreq.Visibility = Visibility.Hidden;
-                gbExactCentralFreq.Visibility = Visibility.Visible;
+                gbAutoCentralFreq.Visibility = Visibility.Visible;
+                gbExactCentralFreq.Visibility = Visibility.Hidden;
             }
         }
 
@@ -340,8 +340,8 @@ namespace AlphaTraining
         {
             if ((gbAutoCentralFreq != null) && (gbExactCentralFreq != null))
             {
-                gbAutoCentralFreq.Visibility = Visibility.Visible;
-                gbExactCentralFreq.Visibility = Visibility.Hidden;
+                gbAutoCentralFreq.Visibility = Visibility.Hidden;
+                gbExactCentralFreq.Visibility = Visibility.Visible;
             }
         }
 
