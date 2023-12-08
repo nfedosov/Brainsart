@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Wait0",
+    "id": "1",
+    "message": "\u002B",
+    "duration": 3,
+    "code": 1,
+    "label": "Pause",
+    "BlockType": 1
+  },
+  {
+    "name": "Cond0",
+    "id": "2",
+    "message": "Cond1",
+    "duration": 5,
+    "code": 2,
+    "label": "Cond1",
+    "BlockType": 2
+  },
+  {
+    "name": "Wait0",
+    "id": "1",
+    "message": "\u002B",
+    "duration": 3,
+    "code": 1,
+    "label": "Pause",
+    "BlockType": 1
+  },
+  {
+    "name": "Cond1",
+    "id": "4",
+    "message": "Cond2",
+    "duration": 5,
+    "code": 4,
+    "label": "Cond2",
+    "BlockType": 2
+  },
+  {
+    "name": "Wait0",
+    "id": "1",
+    "message": "\u002B",
+    "duration": 3,
+    "code": 1,
+    "label": "Pause",
+    "BlockType": 1
+  }
+]

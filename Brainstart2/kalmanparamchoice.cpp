@@ -102,7 +102,7 @@ void KalmanParamChoice::okButtonClicked()
         // The conversion failed, handle the error
         qDebug() << "Invalid value entered";
     } else{
-        kf->init_params(freq,srate,A,r,q);
+        //kf->init_params(freq,srate,A,r,q);
         this->close();
     }
 

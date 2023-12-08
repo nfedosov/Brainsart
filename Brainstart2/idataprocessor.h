@@ -2,7 +2,7 @@
 #define IDATAPROCESSOR_H
 
 #include <QVector>
-#include "./eigen-3.4.0/Eigen/Dense"
+#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
 
 using namespace Eigen;
 
@@ -13,6 +13,9 @@ public:
     //virtual void lfilter(QVector<double> data) = 0;
     //virtual void doSomething() = 0;
     virtual Vector2d step(double y);
+
+    //virtual void init_params(double y);
+    //virtual void init_params(double y, double x);
 
 
 

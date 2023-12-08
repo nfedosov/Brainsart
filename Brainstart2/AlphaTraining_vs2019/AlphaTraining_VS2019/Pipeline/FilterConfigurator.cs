@@ -55,8 +55,9 @@ namespace AlphaTraining
 
             startInfo.Arguments = @"./Data/scripts/FitKalmanFilter.py "
             + argument + " "
-            + _mainWindow.GetSelectedPlot().ToString() + " "
-            + resultFileName;
+            + _mainWindow.GetSelectedPlot().ToString() +" "+
+            Convert.ToInt16(_mainWindow.cbPrefilter.IsChecked).ToString() + " "+ _mainWindow.GetTemporalFilterType().ToString()+" "
+            + _mainWindow.DelayNoiseRatio.Value.ToString() + " "+resultFileName;
 
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;

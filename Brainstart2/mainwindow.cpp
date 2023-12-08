@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 
-#include "..\build-Brainstart2-Desktop_Qt_5_12_12_MinGW_32_bit-Debug/ui_mainwindow.h"
-#include <QDebug>
-#include <QtGlobal>
+#include "./ui_mainwindow.h"
+#include<QDebug>
+#include<QtGlobal>
 #include <iostream>
 #include <fstream> // Include the <fstream> header
 #include <sstream>
@@ -17,10 +17,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-   
+
+
     ui->setupUi(this);
 
-    this->setFixedSize(800,500);
+
+    LoadParameters();
+
+    this->setFixedSize(600,400);
 
     QWidget *centralWidget = new QWidget(this);
     this->setCentralWidget(centralWidget);
@@ -43,8 +47,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     demoButton = new QPushButton("Start Demo", this);
-    setKalmanManual = new QPushButton("Set Kalman Params", this);
+    setKalmanManual = new QPushButton("Set manually \ndata processor parameters", this);
     findStreams = new QPushButton("find streams",this);
+
+    demoButton->setStyleSheet("text-align: left;");
+    setKalmanManual->setStyleSheet("text-align: left;");
+    findStreams->setStyleSheet("text-align: left;");
 
 
     lineEdit1 = new QLineEdit(this);
@@ -80,17 +88,22 @@ MainWindow::MainWindow(QWidget *parent)
     // Connect signals and slots for button group
     //connect(buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(handleButtonGroupClick(int)));
 
+    QVBoxLayout *menu_layout = new QVBoxLayout();
 
+    menu_layout->addWidget(demoButton);
+    menu_layout->addWidget(findStreams);
+    menu_layout->addStretch(1);
+    menu_layout->addWidget(setKalmanManual);
+    //
+    hLayout_1->addLayout(menu_layout);
 
-    hLayout_1->addWidget(demoButton);
-    hLayout_1->addWidget(setKalmanManual);
-    hLayout_1->addWidget(findStreams);
+    hLayout_1->addStretch(1);
     hLayout_1->addWidget(streamListWidget);
 
-    hLayout_1->setStretch(0,1);
-    hLayout_1->setStretch(1,1);
-    hLayout_1->setStretch(2,1);
-    hLayout_1->setStretch(3,2);
+    //hLayout_1->setStretch(0,1);
+    //hLayout_1->setStretch(1,1);
+    //hLayout_1->setStretch(2,1);
+    //hLayout_1->setStretch(3,2);
 
 
     //vLayENV_PHASE->addWidget(envelopeFBButton);
@@ -106,10 +119,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     vLayout->addLayout(hLayout_1);
 
-    //load_params_button = new QPushButton("Load parameteres", this);
+    load_params_button = new QPushButton("Load parameteres", this);
 
     vLayout->addStretch(1);
-    //vLayout->addWidget(load_params_button);
+    vLayout->addWidget(load_params_button);
     vLayout->addWidget(lineEdit1);
     vLayout->addWidget(lineEdit2);
 
@@ -129,9 +142,19 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // default processor
-    dataproc = new WhiteKF();//new CFIR();//new CFIR(100, 8.0, 12.0, 500.0,"hamming");//new WhiteKF();
-//new WhiteKF();
-    datareceiver = new DataReceiver(dataproc);
+    /*if (filter_type == 0)
+    {
+    dataproc_kf = new WhiteKF();//new CFIR();//new CFIR(100, 8.0, 12.0, 500.0,"hamming");//new WhiteKF();
+    }
+
+    if (filter_type == 1)
+    {
+    dataproc_cfir = new CFIR();//new CFIR();//new CFIR(100, 8.0, 12.0, 500.0,"hamming");//new WhiteKF();
+    }*/
+
+
+    //new WhiteKF();
+    //datareceiver = new DataReceiver(dataproc_kf);
 
 
     //setKalmanManual->move(200, 100);
@@ -142,7 +165,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(streamListWidget, &QListWidget::itemClicked, this, &MainWindow::handleStreamSelected);
 
 
-    // connect(load_params_button, &QPushButton::clicked, this, &MainWindow::onLoadParams);
+    //connect(load_params_button, &QPushButton::clicked, this, &MainWindow::onLoadParams);
+    //connect(useCFIRButton, &QRadioButton::clicked, this, &MainWindow::onusecfirButtonClicked);
+
+
+    //connect(buttonGroupKC, &QButtonGroup::buttonToggled,
+    //    this, &MainWindow::handleButtonGroupKCClick);
+    //connect(buttonGroupKC, QOverload<int>::of(&QButtonGroup::buttonClicked), this, &MainWindow::handleButtonGroupKCClick);
+    //connect(buttonGroupKC, &QButtonGroup::idClicked, this, &MainWindow::handleButtonGroupKCClick);
+
 }
 
 
@@ -158,7 +189,7 @@ void MainWindow::ondemoButtonclicked()
 {
 
 
-    signalplotwin = new SignalPlotWin(datareceiver->Nch,500, datareceiver);
+    signalplotwin = new SignalPlotWin(datareceiver->Nch, datareceiver, dirToSave); // Attention
     signalplotwin->show();
 
 
@@ -185,26 +216,49 @@ void MainWindow::onfindStreamsClicked()
 void MainWindow::handleStreamSelected()
 {
     datareceiver->stream_idx = streamListWidget->currentRow();
-    datareceiver->Nch =datareceiver->results[datareceiver->stream_idx].channel_count();
-    datareceiver->spat_filter.resize(datareceiver->Nch);
+    //datareceiver->Nch =datareceiver->results[datareceiver->stream_idx].channel_count();
+    //datareceiver->spat_filter.resize(datareceiver->Nch);
     datareceiver->databuffer.resize(datareceiver->Nch);
+    datareceiver->memStreamInfo();
+
+
+    if (filter_type == 0)
+    {
+        dataproc_kf->srate = datareceiver->srate;
+        dataproc_kf->init_params();
+    }
+
+    if (filter_type == 1)
+    {
+        dataproc_cfir->fs = datareceiver->srate;
+        dataproc_cfir->init_params();
+    }
+
+
+
+
     for (int i = 0; i < datareceiver->Nch; i++) {
-        datareceiver->spat_filter[i] = 0.5; // CHANGE!!
+        //datareceiver->spat_filter[i] = 0.5; // CHANGE!!
 
         datareceiver->databuffer[i].resize(datareceiver->maxbufsamples);
         datareceiver->databuffer[i].fill(0.0);
     }
 
-    // NEW:
-    LoadParameters();
 }
 
 
 
-void MainWindow::SetConfigurationFileName(char* szConfigFileName)
+
+void MainWindow::SetConfigurationFileName(char* szConfigFileName, char* szSaveFileName)
 {
     paramsFileName.assign(szConfigFileName);
+
+    dirToSave.assign(szSaveFileName);
 }
+
+
+
+
 
 void MainWindow::onsetKalmanButtonclicked()
 {
@@ -244,17 +298,20 @@ void MainWindow::handleButtonGroupKCClick(int id)
 }
 */
 
-
+/*
 void MainWindow::onLoadParams()
 {
 
     std::vector<double> values;
-    std::ifstream file(this->paramsFileName);
+    std::string filename = "C:/Users/Fedosov/Documents/projects/brainstart2/results/params.txt";
+
+
+    std::ifstream file(filename);
 
         // Check if the file is open
         if (!file.is_open()) {
-            std::cerr << "Failed to open the file: " << this->paramsFileName << std::endl;
-            return;
+            std::cerr << "Failed to open the file: " << filename << std::endl;
+
         }
 
         std::string line;
@@ -273,9 +330,9 @@ void MainWindow::onLoadParams()
             }
 
         }
-
-        qDebug()<<values[0];
-        qDebug()<<values[1];
+        qDebug()<<"parameters loaded";
+        //qDebug()<<values[0];
+        //qDebug()<<values[1];
         qDebug()<<values[2];
         qDebug()<<values[3];
         qDebug()<<values[4];
@@ -288,17 +345,21 @@ void MainWindow::onLoadParams()
         this->base_q0 = values[1];
         this->base_q1 = values[2];
 
-        datareceiver->spat_filter[0] = values[3];
-        datareceiver->spat_filter[1] = values[4];
-        datareceiver->spat_filter[2] = values[5];
-        datareceiver->spat_filter[3] = values[6];
+        datareceiver->to_prefilter = values[3];
+        for (int i =0; i< this->datareceiver->Nch;i++)
+        {
+             datareceiver->spat_filter[i] = values[i+4];
+
+        }
+        //datareceiver->spat_filter[2] = values[5]; //Attention
+        //datareceiver->spat_filter[3] = values[6]; // Attention
 
 
         // Close the file
         file.close();
 
 
-}
+}*/
 
 
 
@@ -340,14 +401,19 @@ void MainWindow::onQ1changed()
 
 }
 
+
+
+
+
+
+
 void MainWindow::LoadParameters()
 {
     std::vector<double> values;
-    std::ifstream file(this->paramsFileName);
-
+    std::ifstream file(paramsFileName);//"C:/Users/Fedosov/Documents/projects/brainstart_final/Brainstart2/AlphaTraining_vs2019/AlphaTraining_VS2019/bin/Debug/Data/users/PTRRRT0/05_december_2023/config_05.12.2023_17.36.txt");
     // Check if the file is open
     if (!file.is_open()) {
-        std::cerr << "Failed to open the file: " << this->paramsFileName << std::endl;
+        std::cerr << "Failed to open the file: " << std::endl;
         return;
     }
 
@@ -368,15 +434,69 @@ void MainWindow::LoadParameters()
 
     }
 
-    qDebug() << values[0];
-    qDebug() << values[1];
-    qDebug() << values[2];
-    qDebug() << values[3];
-    qDebug() << values[4];
-    qDebug() << values[5];
-    qDebug() << values[6];
+    for (int i = 0; i < values.size(); i++)
+    {
+        qDebug() << values[i];
+    }
 
-    datareceiver->q0 = values[1];
+
+    int Nch = values[0];
+
+
+
+
+    filter_type  = values[1];
+
+
+    if (filter_type == 0)
+    {
+    dataproc_kf = new WhiteKF();//new CFIR();//new CFIR(100, 8.0, 12.0, 500.0,"hamming");//new WhiteKF();
+    datareceiver = new DataReceiver(dataproc_kf);
+    datareceiver->Nch =Nch;
+    datareceiver->spat_filter.resize(datareceiver->Nch);
+
+
+    //dataproc->init_states();
+
+    datareceiver->to_prefilter = values[2];
+
+    dataproc_kf->freq =  values[3];
+
+    datareceiver->q0 = values[4];
+    datareceiver->q1 = values[5];
+
+    dataproc_kf->q =values[6];
+    dataproc_kf->r = values[7];
+
+    // srate values[8]
+
+    for (int k = 9; k<values.size(); k++)
+    {
+        datareceiver->spat_filter[k-9] = values[k];
+    }
+
+
+
+    //dataproc->r << ;
+    //dataproc->q << ;
+
+    //this->freq = free;
+    //this->srate = srate;
+
+    //double arg = 2.0*M_PI*freq/srate;
+    //Psi<< cos(arg), -sin(arg), sin(arg), cos(arg);
+
+    //reset_states();
+
+    }
+
+
+
+    //new WhiteKF();
+
+
+
+    /*datareceiver->q0 = values[1];
     datareceiver->q1 = values[2];
 
     this->base_q0 = values[1];
@@ -385,10 +505,58 @@ void MainWindow::LoadParameters()
     datareceiver->spat_filter[0] = values[3];
     datareceiver->spat_filter[1] = values[4];
     datareceiver->spat_filter[2] = values[5];
-    datareceiver->spat_filter[3] = values[6];
+    datareceiver->spat_filter[3] = values[6];*/
+
+
+    if (filter_type == 1)
+    {
+    dataproc_cfir = new CFIR();//new CFIR();//new CFIR(100, 8.0, 12.0, 500.0,"hamming");//new WhiteKF();
+    datareceiver = new DataReceiver(dataproc_cfir);
+    datareceiver->Nch =Nch;
+    datareceiver->spat_filter.resize(datareceiver->Nch);
+
+
+    //dataproc->init_states();
+
+    datareceiver->to_prefilter = values[2];
+
+    dataproc_cfir->freq =  values[3];
+
+    datareceiver->q0 = values[4];
+    datareceiver->q1 = values[5];
+
+    dataproc_cfir->Ntaps =values[6];
+
+    // srate values[7]
+
+    for (int k = 8; k<values.size(); k++)
+    {
+        datareceiver->spat_filter[k-8] = values[k];
+    }
+
+
+
+    //dataproc->r << ;
+    //dataproc->q << ;
+
+    //this->freq = free;
+    //this->srate = srate;
+
+    //double arg = 2.0*M_PI*freq/srate;
+    //Psi<< cos(arg), -sin(arg), sin(arg), cos(arg);
+
+    //reset_states();
+
+    }
+
+
+
 
 
     // Close the file
     file.close();
 }
+
+
+
 

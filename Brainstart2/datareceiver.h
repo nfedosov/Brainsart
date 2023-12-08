@@ -9,6 +9,8 @@
 #include "whitekf.h"
 #include "cfir.h"
 #include "idataprocessor.h"
+#include "simplebarfbwin.h"
+
 
 #include "liblsl-master/include/lsl_cpp.h"
 
@@ -37,6 +39,7 @@ public:
     float q0 = 1.03829590e-06;
     float q1 =  3.85767676e-06*1.5;
 
+    SimpleBarFBWin* fbwin;
 
     unsigned long long totalsamplesreceived;
     int curposidx = 0;
@@ -44,8 +47,10 @@ public:
     unsigned int maxbufsec = 5;
     unsigned int maxbufsamples;
 
-    double srate = 500.0;
+    double srate; // ATTENTION!!!!
     unsigned int Nch;
+
+    bool to_prefilter = 0;
 
 
     QVector<QVector<double>> databuffer;

@@ -11,12 +11,14 @@
 #include "firwin.h"
 #include "simplebarfbwin.h"
 
+#include "code_iir/IIR.h"
+
 
 class SignalPlotWin : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SignalPlotWin(uint Nch,uint srate, DataReceiver*, QWidget *parent = nullptr);
+    explicit SignalPlotWin(uint Nch, DataReceiver*, string fileToSave, QWidget *parent = nullptr);
 
     QCustomPlot* plot;
     QCustomPlot** plots_processed;
@@ -25,6 +27,9 @@ public:
     DataReceiver* datareceiver;
     SimpleBarFBWin* fbwin;
     SaveData* savedata;
+
+
+    string fileSaveDir;
 
     FirWin* firwin_bp;
 
@@ -58,8 +63,22 @@ public:
     double scale;
     double rng;
 
-    double low_cutoff = 1.0;
-    double high_cutoff = 30.0;
+    QStringList ch_names_string;
+
+    IIR::BiquadsCascade iir_low_bqC;
+    IIR::BiquadsCascade iir_high_bqC;
+    IIR::BiquadsCascade iir_50_bqC;
+    IIR::BiquadsCascade iir_100_bqC;
+    IIR::BiquadsCascade iir_150_bqC;
+    IIR::BiquadsCascade iir_200_bqC;
+
+    double low_cutoff = 2.0;
+    double high_cutoff = 40.0;
+    bool to_Notch = true;
+    bool to_Low = true;
+    bool to_High = true;
+
+
     bool is_started = false;
 
     uint record_pos;
@@ -117,7 +136,6 @@ private:
     QToolButton *zoomLeftButton;
     QToolButton *zoomRightButton;
 
-    void LaunchPenguin();
 };
 
 #endif // SIGNALPLOTWIN_H

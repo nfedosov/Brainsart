@@ -3,11 +3,9 @@
 #include <cmath>
 #include <string>
 #include <vector>
-#define _USE_MATH_DEFINES
-#include "math.h"
 #include "utils.h"
 
-#include "./eigen-3.4.0/Eigen/Dense"
+#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
 
 
 
@@ -15,20 +13,28 @@ using namespace std;
 CFIR::CFIR()//(int numtaps, double low_cutoff, double high_cutoff, double fs, string window)
 
 {
-
-    int numtaps = 100 ;
-    double  low_cutoff = 8.0;
-    double high_cutoff = 12.0;
-     double fs = 500.0;
+    int numtaps = 101 ;//100
+    freq =10.0;
+    fs = 500.0;
     string window = "hamming";
     Ntaps = numtaps;
+    // default params
+}
 
-    h_real.resize(numtaps);
-    h_imag.resize(numtaps);
+void CFIR::init_params()
+{
+
+    string window = "hamming";
+
+    double  low_cutoff = freq-1.0;
+    double high_cutoff = freq+1.0;
+
+    h_real.resize(Ntaps);
+    h_imag.resize(Ntaps);
     double low = low_cutoff / fs;
     double high = high_cutoff / fs;
     double pi = M_PI;
-    double n = numtaps - 1;
+    double n = Ntaps - 1;
     for (int i = 0; i <= n; i++) {
         if (i == n / 2) {
             h_real[i] = 2.0 * (high - low);
@@ -36,7 +42,7 @@ CFIR::CFIR()//(int numtaps, double low_cutoff, double high_cutoff, double fs, st
             h_real[i] = (sin(2.0 * pi * high * (i - n / 2.0)) - sin(2.0 * pi * low * (i - n / 2.0))) / (pi * (i - n / 2.0));
         }
     }
-    std::vector<double> w(numtaps);
+    std::vector<double> w(Ntaps);
     if (window == "hamming") {
         for (int i = 0; i <= n; i++) {
             w[i] = 0.54 - 0.46 * cos(2.0 * pi * i / n);
@@ -57,13 +63,23 @@ CFIR::CFIR()//(int numtaps, double low_cutoff, double high_cutoff, double fs, st
             w[i] = 1.0;
         }
     }
+
+    double sum = 0.0;
     for (int i = 0; i <= n; i++) {
         h_real[i] *= w[i];
+        sum += h_real[i]*h_real[i];
+    }
+
+    sum = std::sqrt(sum);
+    for (int i = 0; i <= n; i++) {
+
+        h_real[i] /= sum;
     }
 
 
-    buf.resize(numtaps);
+    buf.resize(Ntaps);
     buf.fill(0);
+
 
 
 
@@ -74,6 +90,8 @@ CFIR::CFIR()//(int numtaps, double low_cutoff, double high_cutoff, double fs, st
     h_imag = h_complex.imag();
 
     pos_in_buf = 0;
+
+
 
 }
 

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Wait0",
+    "id": "2",
+    "message": "\u002B",
+    "duration": 5,
+    "code": 2,
+    "label": "Pause"
+  },
+  {
+    "name": "Cond0",
+    "id": "1",
+    "message": "\u0413\u043B\u0430\u0437\u0430 \u043E\u0442\u043A\u0440\u044B\u0442\u044B",
+    "duration": 5,
+    "code": 1,
+    "label": "\u0413\u043B\u0430\u0437\u0430 \u043E\u0442\u043A\u0440\u044B\u0442\u044B"
+  },
+  {
+    "name": "Wait0",
+    "id": "2",
+    "message": "\u002B",
+    "duration": 5,
+    "code": 2,
+    "label": "Pause"
+  },
+  {
+    "name": "Cond1",
+    "id": "3",
+    "message": "\u0417\u0430\u043A\u0440\u043E\u0439\u0442\u0435 \u0433\u043B\u0430\u0437\u0430",
+    "duration": 5,
+    "code": 3,
+    "label": "\u0413\u043B\u0430\u0437\u0430 \u0437\u0430\u043A\u0440\u044B\u0442\u044B"
+  },
+  {
+    "name": "Wait0",
+    "id": "2",
+    "message": "\u002B",
+    "duration": 5,
+    "code": 2,
+    "label": "Pause"
+  }
+]

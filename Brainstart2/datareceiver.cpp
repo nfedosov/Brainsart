@@ -1,8 +1,12 @@
 #include "cfir.h"
 #include "datareceiver.h"
-#include "./eigen-3.4.0/Eigen/Dense"
+#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
 #include "liblsl-master/include/lsl_cpp.h"
 #include "qlistwidget.h"
+#include "simplebarfbwin.h"
+//#include "butterworthfilter.cpp"
+
+#include "code_iir/IIR.h"
 
 
 using namespace Eigen;
@@ -34,14 +38,6 @@ DataReceiver::DataReceiver(IDataProcessor *dataproc_obj, QObject *parent)
 
 
     //lsl::stream_inlet inlet(lsl::stream_info("my_stream_name", "my_stream_type", 1), 0, true);
-
-
-    maxbufsamples = ((unsigned int)srate)*maxbufsec;
-
-    envelopebuffer.resize(maxbufsamples);
-    phasebuffer.resize(maxbufsamples);
-    processedbuffer.resize(maxbufsamples);
-
 
 
 }
@@ -84,6 +80,16 @@ void DataReceiver::memStreamInfo()
     //const char* label = info.desc().first_child().first_child().child_value("label");
     //info = new stream_info(results[stream_idx].name(), results[stream_idx].type(), results[stream_idx].channel_count());
     //info->desc() = results[stream_idx].desc();
+    srate =inlet->info().nominal_srate();
+    qDebug()<<srate;
+
+
+    maxbufsamples = ((unsigned int)srate)*maxbufsec;
+
+    envelopebuffer.resize(maxbufsamples);
+    phasebuffer.resize(maxbufsamples);
+    processedbuffer.resize(maxbufsamples);
+
 }
 
 void DataReceiver::lslDataReceive()
@@ -92,12 +98,59 @@ void DataReceiver::lslDataReceive()
     std::vector<std::vector<float>> samples;
     curposidx = 0;
 
-    //double timestamp = 0;
 
-    //spat_filter[0] = -7.03065755e-01;
-    //spat_filter[1] =  -1.87038481e+00;
-    //spat_filter[2]= 1.21180781e+00;
-    //spat_filter[3] = 2.22861430e+00;
+    IIR::ButterworthFilter low_filter;
+    low_filter.CreateLowPass(2*M_PI*50.0/srate, 1.0, 2*M_PI*100.0/srate, -6.0);
+    IIR::BiquadsCascade low_bqC = low_filter.biquadsCascade;
+
+    IIR::ButterworthFilter high_filter;
+    high_filter.CreateHighPass(2*M_PI*4.0/srate, 1.0, 2*M_PI*2.0/srate, -6.0);
+    IIR::BiquadsCascade high_bqC = high_filter.biquadsCascade;
+
+
+    IIR::ButterworthFilter iir_50;
+    iir_50.CreateNotch(2*M_PI*50.0/srate,5.0,4);
+    IIR::BiquadsCascade iir_50_bqC = iir_50.biquadsCascade;
+
+    IIR::ButterworthFilter iir_100;
+    iir_100.CreateNotch(2*M_PI*100.0/srate,5.0,2);
+    IIR::BiquadsCascade iir_100_bqC = iir_100.biquadsCascade;
+
+
+    IIR::ButterworthFilter iir_150;
+    iir_150.CreateNotch(2*M_PI*150.0/srate,5.0,2);
+    IIR::BiquadsCascade iir_150_bqC = iir_150.biquadsCascade;
+
+    IIR::ButterworthFilter iir_200;
+    iir_200.CreateNotch(2*M_PI*200.0/srate,5.0,2);
+    IIR::BiquadsCascade iir_200_bqC = iir_200.biquadsCascade;
+
+
+
+
+
+    /*ButterworthFilter *lowpass = new ButterworthFilter(2, 50.0, 1000.0, Lowpass);
+    lowpass->b[0] =  0.020083365564211232;
+    lowpass->b[1] =  0.040166731128422464;
+    lowpass->b[2] =  0.020083365564211232;
+
+    lowpass->a[0] = 1.0;
+    lowpass->a[1] = -1.5610180758007182;
+    lowpass->a[2] = 0.6413515380575631;*/
+
+          /*
+    ButterworthFilter *bandstop = new ButterworthFilter(2, 50.0, 1000.0, Bandstop);
+    bandstop->b[0] =  0.9875889380903246;
+    bandstop->b[1] = -1.8786541206154759;
+    bandstop->b[2] =  0.9875889380903248;
+
+    bandstop->a[0] = 1.0;
+    bandstop->a[1] = -1.8786541206154757;
+    bandstop->a[2] = 0.9751778761806491;
+*/
+
+
+
 
 
         int n_channels = 1;
@@ -109,6 +162,9 @@ void DataReceiver::lslDataReceive()
 
 
     int vec_len;
+
+    //fbwin =new SimpleBarFBWin();
+    //fbwin->show();
     //std::vector<float> sample;
 
     //inlet->pull_sample(sample);
@@ -141,17 +197,40 @@ void DataReceiver::lslDataReceive()
             {
                 spat_filtered += spat_filter[j]*samples[i][j]*1.0;
             }
+
+
+            if (to_prefilter)
+            {
+
+                spat_filtered = low_bqC.ComputeOutput(spat_filtered);
+                spat_filtered = high_bqC.ComputeOutput(spat_filtered);
+                spat_filtered = iir_50_bqC.ComputeOutput(spat_filtered);
+                spat_filtered = iir_100_bqC.ComputeOutput(spat_filtered);
+                spat_filtered = iir_150_bqC.ComputeOutput(spat_filtered);
+                spat_filtered = iir_200_bqC.ComputeOutput(spat_filtered);
+            }
+
+
+            //spat_filtered = lowpass->filter(spat_filtered);
+            //spat_filtered = highpass->filter(spat_filtered);
+            //spat_filtered = bandstop->filter(spat_filtered);
+            //spat_filtered = (curposidx%2000)/6.0;
+            //spat_filtered = lowpass->filter(spat_filtered);
             x = dataprocessor->step(spat_filtered);
             //dataprocessor->x(0);
             processedbuffer((curposidx+i)%maxbufsamples) =x(0);
             envelopebuffer((curposidx+i)%maxbufsamples) = sqrt(x(0)*x(0)+x(1)*x(1));
             phasebuffer((curposidx+i)%maxbufsamples) = atan(x(0)/x(1)); // ПОка что
             //qInfo()<<envelopebuffer((curposidx+i)%maxbufsamples)<<"\n"<<"x0";
+
+            fbwin->setBarHeight(((float)envelopebuffer((curposidx+i)%maxbufsamples))/500.0);//1.0e5 //jump 8
+            //qDebug()<<(float)envelopebuffer((curposidx+i)%maxbufsamples);
+
             out_sample[0] = (float)envelopebuffer((curposidx+i)%maxbufsamples);
 
 
                         //out_sample[0] =(out_sample[0]-q0)/(q1-q0);
-                        out_sample[0] =(out_sample[0])/(q1);
+                        out_sample[0] =(out_sample[0]/q1);// /(q1);
                         if (out_sample[0] <0)
                         {
                             out_sample[0] = 0.0;
@@ -163,7 +242,7 @@ void DataReceiver::lslDataReceive()
                         (*outlet).push_sample(out_sample);
                         if ((curposidx%50) == 0)
                         {
-                        qDebug()<<out_sample[0];
+                        //qDebug()<<out_sample[0];
                         }
 
         }
@@ -336,6 +415,10 @@ void DataReceiver::fakeDataReceive()
             {
                 spat_filtered += spat_filter[j]*dist(generator)*1.0;
             }
+
+
+
+
             x = dataprocessor->step(spat_filtered);
             //dataprocessor->x(0);
             processedbuffer((curposidx+i)%maxbufsamples) =x(0);

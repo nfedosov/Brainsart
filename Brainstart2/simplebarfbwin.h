@@ -11,7 +11,8 @@ public:
     explicit SimpleBarFBWin(QWidget *parent = nullptr);
 
     int barHeight;
-    void setBarHeight(double height);
+    int signal;
+    void setBarHeight(float height);
 
 
 protected:

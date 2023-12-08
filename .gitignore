@@ -4,10 +4,7 @@
 *.pyc
 *.vsidx
 *.v2
-*.bin
-bin/
 obj/
-Debug/
 release/
 results/
 packages/

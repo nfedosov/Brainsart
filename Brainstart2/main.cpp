@@ -7,15 +7,15 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    
-    if (argc > 1)
-    {
-        MainWindow w;
-        w.SetConfigurationFileName(argv[1]);
-        w.show();
 
-        return a.exec();
-    }
+    if (argc > 1)
+        {
+            MainWindow w;
+            w.SetConfigurationFileName(argv[1],argv[2]);//configuration file and file to save to
+            w.show();
+
+            return a.exec();
+        }
 
     return -1;
 }
