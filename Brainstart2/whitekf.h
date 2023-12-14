@@ -2,7 +2,7 @@
 #define WHITEKF_H
 
 #include "idataprocessor.h"
-#include "./eigen-3.4.0/Eigen/Dense"
+#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
 
 
 using namespace Eigen;
@@ -21,7 +21,7 @@ public:
 
     double default_A = 0.995;
     double default_freq = 10.0;
-    double default_srate = 500.0;
+    double default_srate = 1000.0; //ATTENTION
     double default_r = 100;
     double default_q = 0.01;
 
@@ -44,7 +44,9 @@ public:
 
 
     void reset_states();
-    void init_params(double freq, double srate, double A, double r, double q);
+    //void init_params(double freq, double srate, double A, double r, double q);
+
+    void init_params();
     //void lfilter(QVector<double> data) override;
     void grid_search();
     Vector2d step(double) override;

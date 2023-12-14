@@ -33,11 +33,11 @@ SaveData::SaveData(QObject *parent)
 #include "savedata/fiff.h"
 #include "savedata/fiff_info.h"
 
-void SaveData::saveToFif(Eigen::MatrixXd& data)
+void SaveData::saveToFif(Eigen::MatrixXd& data,std::string saveDir, int Nch,double Fs, QStringList ch_names)
 {
     //const QString & filename = "C:/Users/Fedosov/Documents/projects/Brainstart/records/probe.fif";
 
-    QString filename = "C:/Users/Fedosov/Documents/projects/Brainstart/records/probe.fif";
+    QString filename = QString::fromStdString(saveDir);//"C:/Users/Fedosov/Documents/projects/Brainstart/records/probe.fif";
     QFile file_base(filename);
     FiffStream::SPtr file =FiffStream::start_file(file_base);
     FiffInfo info;
@@ -46,10 +46,10 @@ void SaveData::saveToFif(Eigen::MatrixXd& data)
     //Eigen::MatrixXd data(1000, 5);
 
 
-    info.sfreq = 500.0;
-    info.nchan = 5;
-    info.chs.reserve(info.nchan);
-    info.ch_names << "CH1" << "CH2" << "CH3" << "CH4" << "CH5";
+    info.sfreq = Fs;
+    info.nchan = Nch;
+    info.chs.resize(info.nchan);
+    //info.ch_names << "CH1" << "CH2" ;//<< "CH3" << "CH4" << "CH5";
 
 
     for (int i = 0; i < info.nchan; ++i) {
@@ -57,6 +57,7 @@ void SaveData::saveToFif(Eigen::MatrixXd& data)
         info.chs[i].unit = FIFF_UNIT_V;
         info.chs[i].range = 1e-3;
         info.chs[i].cal = 1.0;
+        info.chs[i].ch_name =ch_names[i];
     }
 
     //file->write_ch_info(info.chs[0]);

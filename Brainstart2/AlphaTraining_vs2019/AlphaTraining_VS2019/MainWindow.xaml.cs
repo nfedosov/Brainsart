@@ -250,6 +250,9 @@ namespace AlphaTraining
             }
 
             lbPlots.ItemsSource = _plots;
+
+            cbTemporalFilterType.Items.Add("CFIR");
+          
         }
 
         private void UpdatePlotsView()
@@ -310,9 +313,19 @@ namespace AlphaTraining
             return cbSpatialFilterType.Text;
         }
 
-        public string GetTemporalFilterType()
+        public int GetTemporalFilterType()
         {
-            return cbTemporalFilterType.Text;
+            if (cbTemporalFilterType.Text == "CFIR")
+            {
+                return 1;
+            }
+
+            if (cbTemporalFilterType.Text == "Фильтр Калмана")
+            {
+                return 0;
+            }
+            return 0;
+
         }
 
         public string GetCentralFrequencyValue()

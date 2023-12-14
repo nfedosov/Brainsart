@@ -1,8 +1,6 @@
 #include "whitekf.h"
-#define _USE_MATH_DEFINES
 #include "math.h"
-#include "./eigen-3.4.0/Eigen/Dense"
-
+#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
 using namespace Eigen;
 
 
@@ -12,7 +10,7 @@ WhiteKF::WhiteKF()
 
     H << 1.0,0.0;
 
-    init_params(default_freq,default_srate,default_A,default_r,default_q);
+    //init_params(default_freq,default_srate,default_A,default_r,default_q);
 
 }
 
@@ -49,7 +47,8 @@ void WhiteKF::reset_states()
     P.Identity();
 }
 
-void WhiteKF:: init_params(double freq, double srate, double A, double r, double q)
+
+/*void WhiteKF:: init_params(double freq, double srate, double A, double r, double q)
 {
     R << r;
     Q << q,0.0,0.0,q;
@@ -63,6 +62,19 @@ void WhiteKF:: init_params(double freq, double srate, double A, double r, double
 
     reset_states();
 }
+*/
+
+void WhiteKF:: init_params()
+{
+    R << r;
+    Q << q,0.0,0.0,q;
+    double arg = 2.0*M_PI*freq/srate;
+    Psi<< cos(arg), -sin(arg), sin(arg), cos(arg);
+
+    reset_states();
+}
+
+
 
 
 void grid_search(double *q_range, double *r_range)

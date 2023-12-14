@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
         #ica.cpp \
+        #butterworthfilter.cpp \
         signaltoolbox.cpp \
         feedbackwin.cpp \
         firwin.cpp \
@@ -30,11 +31,14 @@ SOURCES += \
         savedata/fiff_info.cpp\
         savedata/fiff_info_base.cpp\
         savedata/fiff_ch_info.cpp\
-        savedata/fiff_ch_pos.cpp
-
+        savedata/fiff_ch_pos.cpp\
+        code_iir/IIR.cpp \
+        code_iir/stdafx.cpp
 
 HEADERS += \
     #ica.h \
+    #butterworthfilter.h \
+    constants.h \
     signaltoolbox.h \
     feedbackwin.h \
     firwin.h \
@@ -57,6 +61,8 @@ HEADERS += \
         savedata/fiff_info_base.h\
         savedata/fiff_ch_info.h\
         savedata/fiff_ch_pos.h\
+        code_iir/IIR.h \
+        code_iir/stdafx.h
 
 
 FORMS += \

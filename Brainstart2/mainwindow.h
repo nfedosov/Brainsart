@@ -29,7 +29,12 @@ public:
     double base_q0 = 0;
     double base_q1 = 0;
 
-    IDataProcessor *dataproc;
+    int filter_type =0; // 0 - kalman, 1- cfir
+
+    //IDataProcessor *dataproc;
+
+    WhiteKF *dataproc_kf;
+    CFIR *dataproc_cfir;
 
 
     DataReceiver *datareceiver;
@@ -39,21 +44,23 @@ public:
     QCustomPlot *signalPlot;
 
     //WhiteKF kf(?????/);
+    string paramsFileName;
+    string dirToSave;
 
-    void SetConfigurationFileName(char* szConfigFileName);
+    void SetConfigurationFileName(char* szConfigFileName, char* szSaveFileName);
+
+
 
 
 private slots:
-
-    
-
     void ondemoButtonclicked();
     void onsetKalmanButtonclicked();
     //void handleButtonGroupKCClick(int);
     //void handleButtonGroupKCClick(int);
     void onfindStreamsClicked();
     void handleStreamSelected();
-    void onLoadParams();
+    void LoadParameters();
+    //void onLoadParams();
 
 
 
@@ -65,14 +72,22 @@ private slots:
 
 
 private:
-    string paramsFileName;
     QPushButton *demoButton;
     QPushButton *setKalmanManual;
     QPushButton *findStreams;
     QLineEdit *lineEdit1;
     QLineEdit *lineEdit2;
+    //QCheckBox *envelopeFB; REDO INTO QCHECKOX
+    //QCheckBox *phaseFB;
+    //QRadioButton *envelopeFBButton;
+    //QRadioButton *phaseFBButton;
+    //QButtonGroup* buttonGroupEP;
 
-    //QPushButton* load_params_button;
+    //QRadioButton *useKFButton;
+    //QRadioButton *useCFIRButton;
+
+    //QButtonGroup* buttonGroupKC;
+    QPushButton* load_params_button;
 
 
     QListWidget* streamListWidget;
@@ -84,8 +99,6 @@ private:
 
     //QPushButton *demoButton;
     Ui::MainWindow *ui;
-
-    void LoadParameters();
 
 };
 #endif // MAINWINDOW_H

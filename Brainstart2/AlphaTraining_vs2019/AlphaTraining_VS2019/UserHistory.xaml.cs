@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Diagnostics;
 using System.Windows;
 
 namespace AlphaTraining
@@ -18,7 +19,6 @@ namespace AlphaTraining
         public UserHistory()
         {
             InitializeComponent();
-            LoadPostPlots();
         }
 
 
@@ -38,6 +38,9 @@ namespace AlphaTraining
         }
 
 
+        
+
+
 
         internal void SetUserCard(UserCard userCard)
         {
@@ -49,11 +52,38 @@ namespace AlphaTraining
             lblUserId.Content = _userCard.Id;
 
             // Загрузить список сеансов
-            foreach(var sessionDate in Directory.EnumerateDirectories(String.Format(@".\Data\users\{0}\", _userCard.Id)))
+            List<string> records_list = new List<string>();
+
+            foreach (var sessionDate in Directory.EnumerateDirectories(String.Format(@".\Data\users\{0}\", _userCard.Id)))
             {
                 _sessionsList.Add(Path.GetFileName(sessionDate).Replace('_', ' '));
+                foreach (var fif_file in Directory.EnumerateFiles(sessionDate))
+                {
+                    if (fif_file.Contains(".fif"))
+                    {
+                        records_list.Add(Path.GetFullPath(fif_file));
+                    }
+                }    
+
             }
 
+
+
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = SystemVariables.Instance.PythonPath;
+            startInfo.FileName = "C:/Program Files/Spyder/Python/python.exe";
+            startInfo.Arguments = @"./Data/scripts/postAnalysisSession.py "
+            + String.Join(" ", records_list);
+
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+            var process = Process.Start(startInfo);
+            if (null != process)
+            {
+                process.WaitForExit();
+            }
+
+           
             lbSessionsList.ItemsSource = _sessionsList;
         }
     }

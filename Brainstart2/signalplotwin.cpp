@@ -8,16 +8,23 @@
 #include "firwin.h"
 #include "simplebarfbwin.h"
 
+#include "constants.h"
+#include "code_iir/IIR.h"
 
 
 
 
-SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QWidget *parent)
+
+SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, string fileToSave,QWidget *parent)
     : QWidget{parent}
 {
 
+
+    this->fileSaveDir = fileToSave;
+
     this->datareceiver = datareceiver;
-    this->datareceiver->memStreamInfo();
+    this->srate = datareceiver->srate;
+
     this->savedata = new SaveData();
 
     //data.resize(Nch);
@@ -26,14 +33,41 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
 
 
 
-    bandpass_len = (int)(def_bandpass_lensec*((float)srate));
-    firwin_bp = new FirWin(bandpass_len,low_cutoff,high_cutoff,(double)srate,Nch);
+    bandpass_len = (int)(def_bandpass_lensec*((double)srate));
+    //firwin_bp = new FirWin(bandpass_len,low_cutoff,high_cutoff,(double)srate,Nch);
+    IIR::ButterworthFilter vis_iir_low;
+    vis_iir_low.CreateLowPass(2*M_PI*high_cutoff/srate, 1.0, 2*M_PI*(high_cutoff*2)/srate, -6.0);
+    iir_low_bqC = vis_iir_low.biquadsCascade;
+
+    IIR::ButterworthFilter vis_iir_high;
+    vis_iir_high.CreateHighPass(2*M_PI*(low_cutoff*2)/srate, 1.0, 2*M_PI*(low_cutoff)/srate, -6.0);
+    iir_high_bqC = vis_iir_high.biquadsCascade;
+
+
+    IIR::ButterworthFilter vis_iir_50;
+    vis_iir_50.CreateNotch(2*M_PI*50.0/srate,5.0,4);
+    iir_50_bqC = vis_iir_50.biquadsCascade;
+
+    IIR::ButterworthFilter vis_iir_100;
+    vis_iir_100.CreateNotch(2*M_PI*100.0/srate,5.0,2);
+    iir_100_bqC = vis_iir_100.biquadsCascade;
+
+
+    IIR::ButterworthFilter vis_iir_150;
+    vis_iir_150.CreateNotch(2*M_PI*150.0/srate,5.0,2);
+    iir_150_bqC = vis_iir_150.biquadsCascade;
+
+    IIR::ButterworthFilter vis_iir_200;
+    vis_iir_200.CreateNotch(2*M_PI*200.0/srate,5.0,2);
+    iir_200_bqC = vis_iir_200.biquadsCascade;
+
+
 
 
 
 
     this->Nch = Nch;
-    this->srate = srate;
+    this->srate = datareceiver->srate;
     resize(800, 400);
     startButton = new QPushButton("Start Tracking", this);
     recordButton = new QPushButton("Start record", this);
@@ -54,7 +88,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
                         this->height() - 100,
                         zoomInButton->width(), zoomInButton->height());
 
-    QIcon upIcon("./Data/icons/zoom_up.png");
+    QIcon upIcon("C:/Users/Fedosov/Documents/projects/brainstart2/Brainstart2/zoom_up.png");
     zoomInButton->setIcon(upIcon);
     zoomInButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -64,7 +98,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
                         this->height() - 50,
                         zoomOutButton->width(), zoomOutButton->height());
 
-    QIcon downIcon("./Data/icons/zoom_down.png");
+    QIcon downIcon("C:/Users/Fedosov/Documents/projects/brainstart2/Brainstart2/zoom_down.png");
     zoomOutButton->setIcon(downIcon);
     zoomOutButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -74,7 +108,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
                         this->height() - 75,
                         zoomLeftButton->width(), zoomLeftButton->height());
 
-    QIcon leftIcon("./Data/icons/zoom_left.png");
+    QIcon leftIcon("C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/zoom_left.png");
     zoomLeftButton->setIcon(leftIcon);
     zoomLeftButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -82,12 +116,12 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
                         this->height() - 75,
                         zoomRightButton->width(), zoomRightButton->height());
 
-    QIcon rightIcon("./Data/icons/zoom_right.png");
+    QIcon rightIcon("C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/zoom_right.png");
     zoomRightButton->setIcon(rightIcon);
     zoomRightButton->setStyleSheet("QToolButton { border: none; }");
 
 
-    QIcon recIcon("./Data/icons/record.png");
+    QIcon recIcon("C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/record.png");
     recordButton->setIcon(recIcon);
 
 
@@ -313,7 +347,7 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
 
 
 
-    for (uint i = 0; i < Nch; i++) {
+    for (int i = 0; i < Nch; i++) {
 
         //data[i].resize(1000000);
         //data[i].fill(0.0);
@@ -391,15 +425,18 @@ SignalPlotWin::SignalPlotWin(uint Nch,uint srate, DataReceiver* datareceiver, QW
     plot->rescaleAxes();
     plot->yAxis->setRange(-rng, Nch*rng);
 
+    ch_names_string.resize(Nch);
 
 
     lsl::xml_element channel = channels.child("channel");
-    for (uint i = 0; i < Nch; i++) {
+    for (int i = 0; i < Nch; i++) {
 
         chNames[i] = new QCPItemText(plot);
 
 
         channel_name = channel.child_value("label");
+
+        ch_names_string[i] = channel_name;
 
         //textLabel->setPositionAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
@@ -484,24 +521,38 @@ void SignalPlotWin::updGraphs()
     }
     //qDebug() << 2;
     //qInfo()<<datareceiver->envelopebuffer[(n_samples_in_chunk-1+prevbufidx)%datareceiver->maxbufsamples];
-    //fbwin->setBarHeight(datareceiver->envelopebuffer[(n_samples_in_chunk-1+prevbufidx)%datareceiver->maxbufsamples]*10000000); //jump 8
-
+    //fbwin->setBarHeight(datareceiver->envelopebuffer[(n_samples_in_chunk-1+prevbufidx)%datareceiver->maxbufsamples]*1e7); //jump 8
+    //qDebug()<<(datareceiver->envelopebuffer[(n_samples_in_chunk-1+prevbufidx)%datareceiver->maxbufsamples]*1e7); //jump
 
     if (!isShowProcessed)
     {
-        for (uint i = 0; i < Nch; i++)
+        for (int i = 0; i < Nch; i++)
         {
             for (int j = 0; j <n_samples_in_chunk; j++)
             {
                 //visdata[i][(j+curwinidx)%curlenwin] =(datareceiver->databuffer[i][(j+prevbufidx)%datareceiver->maxbufsamples]);
                 //Тут нужно определиться с буферами, их длиной и т д
-                double prefiltered = 0.0;
-                for (int lag = 0; lag < bandpass_len; lag++)
-                {
+                double prefiltered = datareceiver->databuffer[i][(j+prevbufidx)%datareceiver->maxbufsamples];
+                //for (int lag = 0; lag < bandpass_len; lag++)
+                //{
                     // Перевернуть h!!
                     //qDebug() << 4 << ' ' <<(j+prevbufidx-lag)%datareceiver->maxbufsamples;
-                    prefiltered += (datareceiver->databuffer[i][(j+prevbufidx-lag)%datareceiver->maxbufsamples])*firwin_bp->h[lag];
-                }
+                //    prefiltered += (datareceiver->databuffer[i][(j+prevbufidx-lag)%datareceiver->maxbufsamples])*firwin_bp->h[lag];
+                //}
+                if (to_Low)
+                {prefiltered = iir_low_bqC.ComputeOutput(prefiltered);}
+
+                if (to_High)
+                {prefiltered = iir_high_bqC.ComputeOutput(prefiltered);}
+
+                if (to_Notch)
+                {prefiltered = iir_50_bqC.ComputeOutput(prefiltered);
+                prefiltered = iir_100_bqC.ComputeOutput(prefiltered);
+                prefiltered = iir_150_bqC.ComputeOutput(prefiltered);
+                prefiltered = iir_200_bqC.ComputeOutput(prefiltered);}
+
+                //qDebug() << i;
+                //qDebug() << (datareceiver->databuffer[i][(j+prevbufidx)%datareceiver->maxbufsamples]);
                 //qDebug() << 1;
 
                 visdata[i][(j+curwinidx)%curlenwin] = prefiltered*scale+rng*i;//(datareceiver->databuffer[i][(j+prevbufidx)%datareceiver->maxbufsamples]);
@@ -535,13 +586,20 @@ void SignalPlotWin::updGraphs()
 
     if (isRecorded)
     {
-        for (uint i = 0; i < Nch; i++)
+        for (int i = 0; i < Nch; i++)
         {
             for (int j = 0; j <n_samples_in_chunk; j++)
             {
 
-                data(i,record_pos+j) = (datareceiver->databuffer[i][(j+prevbufidx)%datareceiver->maxbufsamples]);
+                data(i,record_pos+j) = datareceiver->databuffer[i][(j+prevbufidx)%datareceiver->maxbufsamples];
+                //if( i == 1){
+                //data(i,record_pos+j) = (datareceiver->databuffer[i][(j+prevbufidx)%datareceiver->maxbufsamples]);
+                //}
+                //if( i == 0){
+                //data(i,record_pos+j) = (datareceiver->envelopebuffer[(j+prevbufidx)%datareceiver->maxbufsamples]);
+                //}
 
+                //envelopedata[(j+curwinidx)%curlenwin] =(datareceiver->envelopebuffer[(j+prevbufidx)%datareceiver->maxbufsamples]);
             }
         }
 
@@ -659,42 +717,37 @@ void SignalPlotWin::onzoomOutButtonclicked()
 }
 
 
-
-
 void SignalPlotWin::onstartButtonclicked()
 {
     if (!is_started)
     {
 
-        fbwin =new SimpleBarFBWin();
-        fbwin->show();
+    fbwin =new SimpleBarFBWin();
+    fbwin->show();
 
 
-        QThread* thread = new QThread;
+    QThread* thread = new QThread;
+
+    datareceiver->fbwin = fbwin;
+
+    // Move the object to the new thread
+    datareceiver->moveToThread(thread);
+
+    // Connect the thread's started() signal to the method you want to run
+    connect(thread, &QThread::started, datareceiver, &DataReceiver::lslDataReceive);
+
+    // Start the thread
+    thread->start();
 
 
-        // Move the object to the new thread
-        datareceiver->moveToThread(thread);
-
-        // Connect the thread's started() signal to the method you want to run
-        connect(thread, &QThread::started, datareceiver, &DataReceiver::lslDataReceive);
-
-        // Start the thread
-        thread->start();
-
-
-        //samplesfromstart = 0;
-        curwinidx = 0;
-        prevbufidx = 0;
-        curbufidx = datareceiver->curposidx;
-        // накопившееся семплы, которые мы уже визуализировали
-        //cumwinsamples =0;
-        timer.start(50); // Interval 0 means to refresh as fast as possible
-        is_started = true;
-
-
-        // NEW: запускаем в космос пингвина
-        LaunchPenguin();
+    //samplesfromstart = 0;
+    curwinidx = 0;
+    prevbufidx = 0;
+    curbufidx = datareceiver->curposidx;
+    // накопившееся семплы, которые мы уже визуализировали
+    //cumwinsamples =0;
+    timer.start(50); // Interval 0 means to refresh as fast as possible
+    is_started = true;
     }
     else
     {
@@ -710,8 +763,9 @@ void SignalPlotWin::onrecordButtonclicked()
 
     if (isRecorded)
     {
-       //savedata->saveToGDF("C:/Users/Fedosov/Documents/projects/Brainstart/records/trial.gdf");
-       savedata->saveToFif(data);
+
+       Eigen::MatrixXd cut_data = data(Eigen::all, Eigen::seq(0,record_pos));
+       savedata->saveToFif(cut_data,fileSaveDir,this->datareceiver->Nch,this->datareceiver->srate,this->ch_names_string);
        recordButton->setText("Start record");
        //record_pos = 0;
        isRecorded = false;
@@ -720,7 +774,7 @@ void SignalPlotWin::onrecordButtonclicked()
     {
 
         // Resize the matrix to the required size
-        data.resize(Nch, 100000);
+        data.resize(Nch, int(srate*1200));
 
 
         record_pos = 0;
@@ -769,7 +823,11 @@ void SignalPlotWin::onLowCutEntered()
         qDebug() << "Invalid value entered";
     } else{
         low_cutoff = freq;
-        firwin_bp = new FirWin(bandpass_len,low_cutoff,high_cutoff,(double)srate,Nch);
+        //firwin_bp = new FirWin(bandpass_len,low_cutoff,high_cutoff,(double)srate,Nch);
+        IIR::ButterworthFilter vis_iir_high;
+        vis_iir_high.CreateHighPass(2*M_PI*(low_cutoff*2)/srate, 1.0, 2*M_PI*(low_cutoff)/srate, -6.0);
+        iir_high_bqC = vis_iir_high.biquadsCascade;
+
 
     }
 
@@ -790,7 +848,11 @@ void SignalPlotWin::onHighCutEntered()
         qDebug() << "Invalid value entered";
     } else{
         high_cutoff = freq;
-        firwin_bp = new FirWin(bandpass_len,low_cutoff,high_cutoff,(double)srate,Nch);
+
+        IIR::ButterworthFilter vis_iir_low;
+        vis_iir_low.CreateLowPass(2*M_PI*high_cutoff/srate, 1.0, 2*M_PI*(high_cutoff*2)/srate, -6.0);
+        iir_low_bqC = vis_iir_low.biquadsCascade;
+
     }
 
 }
@@ -828,38 +890,8 @@ void SignalPlotWin::resizeEvent(QResizeEvent *event)
 
 }
 
-void SignalPlotWin::LaunchPenguin()
-{
-    STARTUPINFO si;
-    PROCESS_INFORMATION pi;
 
-    ZeroMemory(&si, sizeof(si));
-    si.cb = sizeof(si);
-    ZeroMemory(&pi, sizeof(pi));
-
-
-    BOOL fResult = CreateProcessW(
-        L".\\Data\\games\\ModulPack\\main.exe",
-        NULL,
-        NULL,
-        NULL, 
-        FALSE,
-        0,
-        NULL, 
-        NULL,
-        &si,
-        &pi
-    );
-
-    if (fResult)
-    {
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-    }
-}
-
-
-//ONSTOPBUTTON CLICKED AND ALSO ON THE QUIT DEKETE THREADS!!!!!!!!!!
+//ONSTOPBUTTON CLICKED AND ALSO ON THE QUIT DELETE THREADS!!!!!!!!!!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // ! !!!!!!!!!!!!!!!!!
 // ! !!!!!!!!!!!!!!!!

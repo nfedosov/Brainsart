@@ -1,12 +1,12 @@
 #ifndef CFIR_H
 #define CFIR_H
+#include "idataprocessor.h"
 #include <string>
 
 #include <string>
 #include <vector>
-#include "idataprocessor.h"
 
-#include "./eigen-3.4.0/Eigen/Dense"
+#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
 
 
 using namespace std;
@@ -24,9 +24,13 @@ public:
     VectorXd buf;
     int pos_in_buf = 0;
     int Ntaps;
+    double fs;
+
+    double freq;
 
 
-    Vector2d step(double y) override;
+    Vector2d step(double) override;
+    void init_params();
 
 
 

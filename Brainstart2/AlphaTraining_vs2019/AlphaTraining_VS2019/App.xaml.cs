@@ -94,6 +94,8 @@ namespace AlphaTraining
                     case AlphaTrainingAction.Results:
                         UserHistory userHistory = new UserHistory();
                         userHistory.SetUserCard(userCard);
+                        
+                        userHistory.LoadPostPlots();
                         userHistory.ShowDialog();
 
                         // По завершению просмотра результатов всегда возвращаемся к основному окну
