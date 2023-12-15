@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Cond0",
+    "id": "1",
+    "message": "\u002B",
+    "duration": 10,
+    "code": 1,
+    "label": "Cond1",
+    "BlockType": 2
+  },
+  {
+    "name": "Cond1",
+    "id": "2",
+    "message": "-",
+    "duration": 10,
+    "code": 2,
+    "label": "Cond2",
+    "BlockType": 2
+  }
+]
