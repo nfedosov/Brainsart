@@ -1,13 +1,6 @@
 #ifndef KALMANPARAMCHOICE_H
 #define KALMANPARAMCHOICE_H
 
-#include <QWidget>
-#include <QLineEdit>
-#include <QPushButton.h>
-#include "whitekf.h"
-#include "idataprocessor.h"
-
-
 class KalmanParamChoice : public QWidget
 {
     Q_OBJECT

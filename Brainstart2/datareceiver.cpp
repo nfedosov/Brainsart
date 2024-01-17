@@ -1,22 +1,5 @@
-#include "cfir.h"
-#include "datareceiver.h"
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-#include "liblsl-master/include/lsl_cpp.h"
-#include "qlistwidget.h"
-#include "simplebarfbwin.h"
-//#include "butterworthfilter.cpp"
+#include "stdafx.h"
 
-#include "code_iir/IIR.h"
-
-
-using namespace Eigen;
-using namespace lsl;
-
-
-#include <random>
-#include <chrono>
-#include <thread>
-#include <QDebug>
 
 DataReceiver::DataReceiver(IDataProcessor *dataproc_obj, QObject *parent)
     : QObject{parent}
@@ -173,11 +156,11 @@ void DataReceiver::lslDataReceive()
         //std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
         inlet->pull_chunk(samples);
-        vec_len = samples.size();
+        vec_len = (int)samples.size();
 
         //qDebug()<<samples;
 
-        for (int i = 0; i<Nch; i++)
+        for (uint i = 0; i<Nch; i++)
         {
             for(int j = 0; j<vec_len;j++)
             {
@@ -193,7 +176,7 @@ void DataReceiver::lslDataReceive()
         for(int i = 0; i<vec_len;i++)
         {
             spat_filtered = 0.0;
-            for (int j = 0; j<Nch; j++)
+            for (uint j = 0; j<Nch; j++)
             {
                 spat_filtered += spat_filter[j]*samples[i][j]*1.0;
             }
@@ -210,22 +193,12 @@ void DataReceiver::lslDataReceive()
                 spat_filtered = iir_200_bqC.ComputeOutput(spat_filtered);
             }
 
-
-            //spat_filtered = lowpass->filter(spat_filtered);
-            //spat_filtered = highpass->filter(spat_filtered);
-            //spat_filtered = bandstop->filter(spat_filtered);
-            //spat_filtered = (curposidx%2000)/6.0;
-            //spat_filtered = lowpass->filter(spat_filtered);
             x = dataprocessor->step(spat_filtered);
-            //dataprocessor->x(0);
+
             processedbuffer((curposidx+i)%maxbufsamples) =x(0);
             envelopebuffer((curposidx+i)%maxbufsamples) = sqrt(x(0)*x(0)+x(1)*x(1));
             phasebuffer((curposidx+i)%maxbufsamples) = atan(x(0)/x(1)); // ПОка что
-            //qInfo()<<envelopebuffer((curposidx+i)%maxbufsamples)<<"\n"<<"x0";
-
-            fbwin->setBarHeight(((float)envelopebuffer((curposidx+i)%maxbufsamples))/500.0);//1.0e5 //jump 8
-            //qDebug()<<(float)envelopebuffer((curposidx+i)%maxbufsamples);
-
+            
             out_sample[0] = (float)envelopebuffer((curposidx+i)%maxbufsamples);
 
 
@@ -394,7 +367,7 @@ void DataReceiver::fakeDataReceive()
         if (counter> totalsamplesreceived)
         {
             difsamples = counter-totalsamplesreceived;
-            for (int i = 0; i<Nch; i++)
+            for (uint i = 0; i<Nch; i++)
             {
                 for(int j = 0; j<difsamples;j++)
                 {
@@ -411,7 +384,7 @@ void DataReceiver::fakeDataReceive()
         for(int i = 0; i<difsamples;i++)
         {
             spat_filtered = 0.0;
-            for (int j = 0; j<Nch; j++)
+            for (uint j = 0; j<Nch; j++)
             {
                 spat_filtered += spat_filter[j]*dist(generator)*1.0;
             }

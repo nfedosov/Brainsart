@@ -1,24 +1,8 @@
-#include "savedata.h"
-//#include "biosig-dev.h"
-#include <QFile>
-#include <QDataStream>
-#include <QDebug>
+#include "stdafx.h"
 
-/*
-#define T1T2
-
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <time.h>
-
-
-#include "savedata_def.h"
-#include "savedata/fiff_constant.h"
-*/
+#include "FIFF/fiff.h"
+#include "FIFF/fiff_info.h"
+#include "FIFF/fiff_id.h"
 
 SaveData::SaveData(QObject *parent)
     : QObject{parent}
@@ -26,14 +10,7 @@ SaveData::SaveData(QObject *parent)
 
 }
 
-
-
-
-#include <iostream>
-#include "savedata/fiff.h"
-#include "savedata/fiff_info.h"
-
-void SaveData::saveToFif(Eigen::MatrixXd& data,std::string saveDir, int Nch,double Fs, QStringList ch_names)
+void SaveData::saveToFif(Eigen::MatrixXd& data,std::string saveDir, int Nch,double Fs, QList<QString> ch_names)
 {
     //const QString & filename = "C:/Users/Fedosov/Documents/projects/Brainstart/records/probe.fif";
 
@@ -48,14 +25,14 @@ void SaveData::saveToFif(Eigen::MatrixXd& data,std::string saveDir, int Nch,doub
 
     info.sfreq = Fs;
     info.nchan = Nch;
-    info.chs.resize(info.nchan);
+    info.chs.reserve(info.nchan);
     //info.ch_names << "CH1" << "CH2" ;//<< "CH3" << "CH4" << "CH5";
 
 
     for (int i = 0; i < info.nchan; ++i) {
         info.chs[i].kind = FIFFV_EEG_CH;
         info.chs[i].unit = FIFF_UNIT_V;
-        info.chs[i].range = 1e-3;
+        info.chs[i].range = (float)1e-3;
         info.chs[i].cal = 1.0;
         info.chs[i].ch_name =ch_names[i];
     }

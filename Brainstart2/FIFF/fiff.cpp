@@ -1,5 +1,4 @@
-#include "fiff.h"
-#include "fiff_constants.h"
+#include "pch.h"
 
 
 
@@ -14,12 +13,7 @@
 #define FALSE 0
 #endif
 
-#include <iostream>
-#include <time.h>
-#include "fiff_ch_info.h"
 
-
-#include <QFile>
 
 //=============================================================================================================
 // USED NAMESPACES

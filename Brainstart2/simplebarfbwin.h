@@ -1,9 +1,6 @@
 #ifndef SIMPLEBARFBWIN_H
 #define SIMPLEBARFBWIN_H
 
-
-#include <QWidget>
-
 class SimpleBarFBWin : public QWidget
 {
     Q_OBJECT

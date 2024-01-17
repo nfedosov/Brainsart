@@ -1,21 +1,8 @@
-#include "signalplotwin.h"
-#include "qcustomplot.h"
-#include <QPushButton.h>
-#include <QTimer>
-#include <vector>
-#include <QThread>
-#include "datareceiver.h"
-#include "firwin.h"
-#include "simplebarfbwin.h"
+#include "stdafx.h"
 
-#include "constants.h"
-#include "code_iir/IIR.h"
+#include "../QCustomPlot/qcustomplot.h"
 
-
-
-
-
-SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, string fileToSave,QWidget *parent)
+SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, std::string fileToSave,QWidget *parent)
     : QWidget{parent}
 {
 
@@ -88,7 +75,7 @@ SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, string fileTo
                         this->height() - 100,
                         zoomInButton->width(), zoomInButton->height());
 
-    QIcon upIcon("C:/Users/Fedosov/Documents/projects/brainstart2/Brainstart2/zoom_up.png");
+    QIcon upIcon("./Data/icons/zoom_up.png");
     zoomInButton->setIcon(upIcon);
     zoomInButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -98,7 +85,7 @@ SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, string fileTo
                         this->height() - 50,
                         zoomOutButton->width(), zoomOutButton->height());
 
-    QIcon downIcon("C:/Users/Fedosov/Documents/projects/brainstart2/Brainstart2/zoom_down.png");
+    QIcon downIcon("./Data/icons/zoom_down.png");
     zoomOutButton->setIcon(downIcon);
     zoomOutButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -108,7 +95,7 @@ SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, string fileTo
                         this->height() - 75,
                         zoomLeftButton->width(), zoomLeftButton->height());
 
-    QIcon leftIcon("C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/zoom_left.png");
+    QIcon leftIcon("./Data/icons/zoom_left.png");
     zoomLeftButton->setIcon(leftIcon);
     zoomLeftButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -116,7 +103,7 @@ SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, string fileTo
                         this->height() - 75,
                         zoomRightButton->width(), zoomRightButton->height());
 
-    QIcon rightIcon("C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart2/zoom_right.png");
+    QIcon rightIcon("./Data/icons/zoom_right.png");
     zoomRightButton->setIcon(rightIcon);
     zoomRightButton->setStyleSheet("QToolButton { border: none; }");
 
@@ -347,7 +334,7 @@ SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, string fileTo
 
 
 
-    for (int i = 0; i < Nch; i++) {
+    for (uint i = 0; i < Nch; i++) {
 
         //data[i].resize(1000000);
         //data[i].fill(0.0);
@@ -425,18 +412,18 @@ SignalPlotWin::SignalPlotWin(uint Nch, DataReceiver* datareceiver, string fileTo
     plot->rescaleAxes();
     plot->yAxis->setRange(-rng, Nch*rng);
 
-    ch_names_string.resize(Nch);
+    ch_names_string.reserve(Nch);
 
 
     lsl::xml_element channel = channels.child("channel");
-    for (int i = 0; i < Nch; i++) {
+    for (uint i = 0; i < Nch; i++) {
 
         chNames[i] = new QCPItemText(plot);
 
 
         channel_name = channel.child_value("label");
 
-        ch_names_string[i] = channel_name;
+        ch_names_string.append(channel_name);
 
         //textLabel->setPositionAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
@@ -526,7 +513,7 @@ void SignalPlotWin::updGraphs()
 
     if (!isShowProcessed)
     {
-        for (int i = 0; i < Nch; i++)
+        for (uint i = 0; i < Nch; i++)
         {
             for (int j = 0; j <n_samples_in_chunk; j++)
             {
@@ -586,7 +573,7 @@ void SignalPlotWin::updGraphs()
 
     if (isRecorded)
     {
-        for (int i = 0; i < Nch; i++)
+        for (uint i = 0; i < Nch; i++)
         {
             for (int j = 0; j <n_samples_in_chunk; j++)
             {
@@ -632,7 +619,7 @@ void SignalPlotWin::updGraphs()
 
     if (!isShowProcessed)
     {
-        for (int i = 0; i < Nch; i++) {
+        for (uint i = 0; i < Nch; i++) {
             plot->graph(i)->setData(timedata, visdata[i]);
 
         }
@@ -655,7 +642,7 @@ void SignalPlotWin::updGraphs()
 void SignalPlotWin::onzoomInButtonclicked()
 {
     rng = rng/2.0;
-    for (int i = 0; i < Nch; i++)
+    for (uint i = 0; i < Nch; i++)
     {
         plot->yAxis->setRange(-rng, Nch*rng);
         plots_processed[0]->yAxis->setRange(-rng,rng);
@@ -664,7 +651,7 @@ void SignalPlotWin::onzoomInButtonclicked()
 
 
 
-    for (int i = 0; i < Nch; i++)
+    for (uint i = 0; i < Nch; i++)
     {
         chNames[i]->position->setCoords(0.45, ((rng)*i)+rng/5);
         for (int j = 0; j <curlenwin; j++)
@@ -684,7 +671,7 @@ void SignalPlotWin::onzoomInButtonclicked()
 void SignalPlotWin::onzoomOutButtonclicked()
 {
     rng = rng*2.0;
-    for (int i = 0; i < Nch; i++)
+    for (uint i = 0; i < Nch; i++)
     {
         plot->yAxis->setRange(-rng, Nch*rng);
         plots_processed[0]->yAxis->setRange(-rng,rng);
@@ -692,43 +679,56 @@ void SignalPlotWin::onzoomOutButtonclicked()
     }
 
 
-    for (int i = 0; i < Nch; i++)
+    for (uint i = 0; i < Nch; i++)
     {
         chNames[i]->position->setCoords(0.45, ((rng)*i)+rng/5);
         for (int j = 0; j <curlenwin; j++)
         {
-
-
                 visdata[i][j] = ((visdata[i][j]-rng*i/2.0)+rng*i);//(datareceiver->databuffer[i][(j+prevbufidx)%datareceiver->maxbufsamples]);
-
 
                 // Здесь или отдельно??
 
             }
 
         }
-
-
-
-
-
-
-
 }
 
+void SignalPlotWin::LaunchPenguin()
+{
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+
+    BOOL fResult = CreateProcessW(
+        L".\\Data\\games\\ModulPack\\main.exe",
+        NULL,
+        NULL,
+        NULL,
+        FALSE,
+        0,
+        NULL,
+        NULL,
+        &si,
+        &pi
+    );
+
+    if (fResult)
+    {
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    }
+}
 
 void SignalPlotWin::onstartButtonclicked()
 {
     if (!is_started)
     {
 
-    fbwin =new SimpleBarFBWin();
-    fbwin->show();
-
-
     QThread* thread = new QThread;
-
-    datareceiver->fbwin = fbwin;
 
     // Move the object to the new thread
     datareceiver->moveToThread(thread);
@@ -748,6 +748,10 @@ void SignalPlotWin::onstartButtonclicked()
     //cumwinsamples =0;
     timer.start(50); // Interval 0 means to refresh as fast as possible
     is_started = true;
+
+    // NEW: запускаем в космос пингвина
+    LaunchPenguin();
+
     }
     else
     {

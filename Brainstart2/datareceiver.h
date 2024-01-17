@@ -2,17 +2,6 @@
 #define DATARECEIVER_H
 
 
-#include <QWidget>
-#include <vector>
-
-#include "qlistwidget.h"
-#include "whitekf.h"
-#include "cfir.h"
-#include "idataprocessor.h"
-#include "simplebarfbwin.h"
-
-
-#include "liblsl-master/include/lsl_cpp.h"
 
 using namespace lsl;
 
@@ -38,8 +27,6 @@ public:
 
     float q0 = 1.03829590e-06;
     float q1 =  3.85767676e-06*1.5;
-
-    SimpleBarFBWin* fbwin;
 
     unsigned long long totalsamplesreceived;
     int curposidx = 0;

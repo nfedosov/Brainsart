@@ -17,10 +17,7 @@
 // The IIR namespace includes a set of classes to design and test Infinite Impulse Response Digital Filters
 // Date: November 16, 2016
 
-#include <cmath>
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+
 
 #define FILTER_TYPE_LOWPASS 0
 #define FILTER_TYPE_HIGHPASS 1

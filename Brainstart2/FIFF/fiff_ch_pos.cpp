@@ -1,6 +1,6 @@
 //=============================================================================================================
 /**
- * @file     fiff_ch_info.cpp
+ * @file     fiff_ch_pos.cpp
  * @author   Lorenz Esch <lesch@mgh.harvard.edu>;
  *           Matti Hamalainen <msh@nmr.mgh.harvard.edu>;
  *           Christoph Dinh <chdinh@nmr.mgh.harvard.edu>
@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @brief    Definition of the FiffChInfo Class.
+ * @brief    Definition of the FiffChPos Class.
  *
  */
 
@@ -38,7 +38,7 @@
 // INCLUDES
 //=============================================================================================================
 
-#include "fiff_ch_info.h"
+#include "pch.h"
 
 //=============================================================================================================
 // USED NAMESPACES
@@ -50,41 +50,36 @@ using namespace FIFFLIB;
 // DEFINE MEMBER METHODS
 //=============================================================================================================
 
-FiffChInfo::FiffChInfo()
-: scanNo(0)
-, logNo(0)
-, kind(0)
-, range(1.0f)
-, cal(1.0f)
-, coord_frame(FIFFV_COORD_UNKNOWN)
-, unit(0)
-, unit_mul(0)
-, ch_name(QString(""))
+FiffChPos::FiffChPos()
+: coil_type(0)
 {
-    coil_trans.setIdentity();
+    for(qint32 i = 0; i < 3; ++i)
+    {
+        r0[i] = 0.0f;
+        ex[i] = 0.0f;
+        ey[i] = 0.0f;
+        ey[i] = 0.0f;
+    }
 }
 
 //=============================================================================================================
 
-FiffChInfo::FiffChInfo(const FiffChInfo &p_FiffChInfo)
-: scanNo(p_FiffChInfo.scanNo)
-, logNo(p_FiffChInfo.logNo)
-, kind(p_FiffChInfo.kind)
-, range(p_FiffChInfo.range)
-, cal(p_FiffChInfo.cal)
-, chpos(p_FiffChInfo.chpos)
-, coil_trans(p_FiffChInfo.coil_trans)
-, eeg_loc(p_FiffChInfo.eeg_loc)
-, coord_frame(p_FiffChInfo.coord_frame)
-, unit(p_FiffChInfo.unit)
-, unit_mul(p_FiffChInfo.unit_mul)
-, ch_name(p_FiffChInfo.ch_name)
+FiffChPos::FiffChPos(const FiffChPos &p_FiffChPos)
+: coil_type(p_FiffChPos.coil_type)
 {
+    for(qint32 i = 0; i < 3; ++i)
+    {
+        r0[i] = p_FiffChPos.r0[i];
+        ex[i] = p_FiffChPos.ex[i];
+        ey[i] = p_FiffChPos.ey[i];
+        ez[i] = p_FiffChPos.ez[i];
+    }
 }
 
 //=============================================================================================================
 
-FiffChInfo::~FiffChInfo()
+FiffChPos::~FiffChPos()
 {
+
 }
 

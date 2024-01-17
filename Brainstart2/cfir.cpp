@@ -1,22 +1,12 @@
-#include "cfir.h"
+#include "stdafx.h"
 
-#include <cmath>
-#include <string>
-#include <vector>
-#include "utils.h"
-
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-
-
-
-using namespace std;
 CFIR::CFIR()//(int numtaps, double low_cutoff, double high_cutoff, double fs, string window)
 
 {
     int numtaps = 101 ;//100
     freq =10.0;
     fs = 500.0;
-    string window = "hamming";
+    std::string window = "hamming";
     Ntaps = numtaps;
     // default params
 }
@@ -24,7 +14,7 @@ CFIR::CFIR()//(int numtaps, double low_cutoff, double high_cutoff, double fs, st
 void CFIR::init_params()
 {
 
-    string window = "hamming";
+    std::string window = "hamming";
 
     double  low_cutoff = freq-1.0;
     double high_cutoff = freq+1.0;

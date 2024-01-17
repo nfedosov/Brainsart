@@ -1,16 +1,7 @@
 #ifndef CFIR_H
 #define CFIR_H
+
 #include "idataprocessor.h"
-#include <string>
-
-#include <string>
-#include <vector>
-
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-
-
-using namespace std;
-using namespace Eigen;
 
 class CFIR: public IDataProcessor
 {
@@ -32,14 +23,7 @@ public:
     Vector2d step(double) override;
     void init_params();
 
-
-
-    //step();
-
-    //lfilter(init_z);
-    //filtfilt();
     void grid_search();
-
 
 };
 

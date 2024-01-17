@@ -1,9 +1,4 @@
-#include <complex>
-#include <cmath>
-
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-
-using namespace Eigen;;
+	
 
 #ifndef UTILS_H
 #define UTILS_H

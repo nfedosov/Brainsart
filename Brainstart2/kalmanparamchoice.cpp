@@ -1,11 +1,5 @@
-#include "kalmanparamchoice.h"
-#include <QLineEdit>
-#include <QPushButton.h>
-#include <QDebug>
-#include "qboxlayout.h"
-#include "qlabel.h"
-#include "whitekf.h"
-#include <QString>
+#include "stdafx.h"
+
 
 KalmanParamChoice::KalmanParamChoice(WhiteKF* kf, QWidget *parent)
     : QWidget{parent}
@@ -67,8 +61,6 @@ KalmanParamChoice::KalmanParamChoice(WhiteKF* kf, QWidget *parent)
 
 
     connect(okButton, &QPushButton::clicked, this, &KalmanParamChoice::okButtonClicked);
-
-
 }
 
 
@@ -76,8 +68,6 @@ KalmanParamChoice::KalmanParamChoice(WhiteKF* kf, QWidget *parent)
 
 void KalmanParamChoice::okButtonClicked()
 {
-
-
     QString text_freq = freqChoice->text();
     QString text_A = AChoice->text();
     QString text_srate = srateChoice->text();
@@ -88,15 +78,15 @@ void KalmanParamChoice::okButtonClicked()
     bool allok = true;
 
     double freq = text_freq.toDouble(&ok);
-    allok = ok&allok;
+    allok = ok && allok;
     double A = text_A.toDouble(&ok);
-    allok = ok&allok;
+    allok = ok && allok;
     double srate = text_srate.toDouble(&ok);
-    allok = ok&allok;
+    allok = ok && &allok;
     double r = text_r.toDouble(&ok);
-    allok = ok&allok;
+    allok = ok && allok;
     double q = text_q.toDouble(&ok);
-    allok = ok&allok;
+    allok = ok && allok;
 
     if (! allok) {
         // The conversion failed, handle the error

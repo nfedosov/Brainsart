@@ -1,9 +1,4 @@
-#include "whitekf.h"
-#include "math.h"
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-using namespace Eigen;
-
-
+#include "stdafx.h"
 
 WhiteKF::WhiteKF()
 {
@@ -79,6 +74,9 @@ void WhiteKF:: init_params()
 
 void grid_search(double *q_range, double *r_range)
 {
+    UNREFERENCED_PARAMETER(q_range);
+    UNREFERENCED_PARAMETER(r_range);
+
     //q_size = sizeof(q_range);
     //r_size = sizeof(r_range);
     //for(int i= 0; i<q_size;i++)

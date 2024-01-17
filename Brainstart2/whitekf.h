@@ -1,12 +1,6 @@
 #ifndef WHITEKF_H
 #define WHITEKF_H
 
-#include "idataprocessor.h"
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-
-
-using namespace Eigen;
-
 class WhiteKF: public IDataProcessor
 {
 public:

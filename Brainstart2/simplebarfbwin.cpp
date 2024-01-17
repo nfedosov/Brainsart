@@ -1,11 +1,10 @@
+#include "stdafx.h"
 #include "simplebarfbwin.h"
 #include "qpainter.h"
 
 SimpleBarFBWin::SimpleBarFBWin(QWidget *parent)
     : QWidget{parent}
 {
-
-
     barHeight = 10;
 }
 
@@ -14,14 +13,7 @@ SimpleBarFBWin::SimpleBarFBWin(QWidget *parent)
 void SimpleBarFBWin::setBarHeight(float height)
 {
     barHeight = 0;
-    /*
-    int int_height = int(height);
-    if (int_height != barHeight)
-    {
-        barHeight = int_height;
-        update(); // Repaint the widget
-    }*/
-    //int signal = int(height/255.0);
+
     float orig = height/2.0;
 
     if (orig < 0) {
@@ -44,24 +36,9 @@ void SimpleBarFBWin::setBarHeight(float height)
 
 
     QString color = "background-color: #" + hclr.repeated(3) + ";";
-    //this->setStyleSheet(color);
-   // qDebug() <<color;
-
-
 
     update();
-    //update();
-    //this->update();
 }
-
-
-//public:
-    //BarChart(QWidget *parent = nullptr)
-    //    : QWidget(parent), barHeight(50) {}
-
-    // Set the height of the bar and repaint
-
-
 
 void SimpleBarFBWin::paintEvent(QPaintEvent *event)
 {

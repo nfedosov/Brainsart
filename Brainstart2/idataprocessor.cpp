@@ -1,4 +1,4 @@
-#include "idataprocessor.h"
+#include "stdafx.h"
 
 /*
 IDataProcessor::IDataProcessor()
@@ -9,6 +9,8 @@ IDataProcessor::IDataProcessor()
 
 Vector2d IDataProcessor::step(double y)
 {
+	UNREFERENCED_PARAMETER(y);
+
    Vector2d x(0.0, 0.0);
    return x;
 }

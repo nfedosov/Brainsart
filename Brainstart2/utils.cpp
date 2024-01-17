@@ -1,10 +1,4 @@
-#include <complex>
-#include <cmath>
-
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-
-using namespace Eigen;
-using namespace std;
+#include "stdafx.h"
 
 
 struct cor_delay {
@@ -21,7 +15,7 @@ struct cor_delay {
 //}
 
 
-Eigen::VectorXcd hilbert(const Eigen::VectorXd& x, int N = -1) {
+Eigen::VectorXcd hilbert(const Eigen::VectorXd& x, int N) {
     // Compute the Hilbert transform of the input signal x using the FFT method.
 
     if (N == -1) {
@@ -38,7 +32,8 @@ Eigen::VectorXcd hilbert(const Eigen::VectorXd& x, int N = -1) {
     MatrixXcd dft(N, N);
     for (int k = 0; k < N; k++) {
       for (int n = 0; n < N; n++) {
-        complex<double> arg = -(2.0 * M_PI * 1i * complex<double>(k * n)) / complex<double>(N);
+          using namespace std;
+          std::complex<double> arg = -(2.0 * M_PI * 1i * std::complex<double>(k * n)) / std::complex<double>(N);
         dft(k,n) = exp(arg);
       }
     }

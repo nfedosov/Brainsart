@@ -1,17 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QRadioButton>
-#include "qpushbutton.h"
-
-
-#include "kalmanparamchoice.h"
-#include "qcustomplot.h"
-#include "signalplotwin.h"
-#include "datareceiver.h"
-#include "idataprocessor.h"
-
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -44,8 +33,8 @@ public:
     QCustomPlot *signalPlot;
 
     //WhiteKF kf(?????/);
-    string paramsFileName;
-    string dirToSave;
+    std::string paramsFileName;
+    std::string dirToSave;
 
     void SetConfigurationFileName(char* szConfigFileName, char* szSaveFileName);
 

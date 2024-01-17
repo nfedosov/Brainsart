@@ -1,7 +1,6 @@
 #ifndef SIGNALTOOLBOX_H
 #define SIGNALTOOLBOX_H
 
-#include <QWidget>
 
 class SignalToolBox : public QWidget
 {

@@ -1,35 +1,25 @@
 #ifndef SIGNALPLOTWIN_H
 #define SIGNALPLOTWIN_H
 
-#include <QWidget>
-#include <QPushButton.h>
-#include <QTimer>
-#include <QVector>
-#include "qcustomplot.h"
-#include "datareceiver.h"
-#include "savedata.h"
-#include "firwin.h"
-#include "simplebarfbwin.h"
 
-#include "code_iir/IIR.h"
-
+#include "../QCustomPlot/qcustomplot.h"
 
 class SignalPlotWin : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SignalPlotWin(uint Nch, DataReceiver*, string fileToSave, QWidget *parent = nullptr);
+    explicit SignalPlotWin(uint Nch, DataReceiver*, std::string fileToSave, QWidget *parent = nullptr);
 
     QCustomPlot* plot;
     QCustomPlot** plots_processed;
     QCPItemLine *verticalLine;
 
     DataReceiver* datareceiver;
-    SimpleBarFBWin* fbwin;
+
     SaveData* savedata;
 
 
-    string fileSaveDir;
+    std::string fileSaveDir;
 
     FirWin* firwin_bp;
 
@@ -63,7 +53,7 @@ public:
     double scale;
     double rng;
 
-    QStringList ch_names_string;
+    QList<QString> ch_names_string;
 
     IIR::BiquadsCascade iir_low_bqC;
     IIR::BiquadsCascade iir_high_bqC;
@@ -136,6 +126,8 @@ private:
     QToolButton *zoomLeftButton;
     QToolButton *zoomRightButton;
 
+
+    void LaunchPenguin();
 };
 
 #endif // SIGNALPLOTWIN_H

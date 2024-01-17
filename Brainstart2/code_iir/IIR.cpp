@@ -1,6 +1,6 @@
-#include "stdafx.h"  //_____________________________________________ IIR.cpp
-#include "IIR.h" 
-#include <iostream>
+#include "stdafx.h"
+#include "..\stdafx.h"  //_____________________________________________ IIR.cpp
+
 
 // IIR Library Version 1.0 (Files: IIR.h and IIR.cpp)
 // The IIR library has a set of classes to design, analyze and test IIR digital filters
@@ -606,6 +606,12 @@ bool BiquadFilter::CreateHighPass(double cutFreq_rads, double passBand_dB, doubl
 
 bool BiquadFilter::Create(int filter_type, double cutFreq_rads, double passBand_dB, double stopFreq_rads, double stopBand_dB)
 {
+	UNREFERENCED_PARAMETER(filter_type);
+	UNREFERENCED_PARAMETER(cutFreq_rads);
+	UNREFERENCED_PARAMETER(passBand_dB);
+	UNREFERENCED_PARAMETER(stopFreq_rads);
+	UNREFERENCED_PARAMETER(stopBand_dB);
+
 	return false;
 }
 
@@ -748,7 +754,6 @@ bool ChebyshevFilter::Create(int filter_type, double cutFreq_rads, double passBa
 	const double alpha = 1.0/epsilon + sqrt(1.0+1.0/(epsilon*epsilon));
 	const double beta = (pow(alpha, 1.0/N) - pow(alpha, -1.0/N))/2.0;
 	const double gamma = (pow(alpha, 1.0/N) + pow(alpha, -1.0/N))/2.0;
-	const double zero = 0.0;
 	const int half = N/2;
 	IIR::BiquadsCascade biquads;
 	if (biquads.SetSize(half) == false) return false;
@@ -816,7 +821,7 @@ bool EllipticFilter::Create(int filter_type, double cutFreq_rads, double passBan
 	const double dn = (log10(16.0*D))/(log10(1.0/q));
 	const int in = (int)ceil(dn); // EQ. (5.4)
 	const int n = (in %2 == 0) ? in : in +1; // Force even
-	const double actual_As = 10.0*log10(1.0 + (pow(10.0, Ap/10.0)-1.0)/(16.0*pow(q, (double)n))); // EQ. (5.5)
+	// const double actual_As = 10.0*log10(1.0 + (pow(10.0, Ap/10.0)-1.0)/(16.0*pow(q, (double)n))); // EQ. (5.5)
 	const double alpha = sqrt(wp*ws); // EQ. (5.8)
 	const double vv = pow(10.0, Ap/20.0);
 	const double V = (1.0/(2.0*n))*log((vv + 1.0)/(vv - 1.0)); // EQ. (5.12)
@@ -921,7 +926,7 @@ bool EllipticFilter::Create(int filter_type, double cutFreq_rads, double passBan
 	if (biquads.SetSize(half))
 	{
 		double A, B, C, a, b, c;
-		const double delta = M_PI/N;
+
 		for (i = 0; i < half; i++)
 		{
 			//______________ Numerator: A*s*s + B*s + C

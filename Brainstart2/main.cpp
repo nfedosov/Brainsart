@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include "mainwindow.h"
 #include <stdio.h>
 #include <QTextCodec>

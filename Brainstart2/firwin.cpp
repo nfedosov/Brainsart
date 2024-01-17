@@ -1,22 +1,7 @@
-#include "firwin.h"
-#include <cmath>
-#include <string>
-#include <vector>
+#include "stdafx.h"
 
-
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/Eigen/Dense>
-#include <C:/Users/Fedosov/Documents/projects/Brainstart/Brainstart/eigen-3.4.0/unsupported/Eigen/FFT>
-
-
-
-using namespace std;
-
-FirWin::FirWin(int numtaps, double low_cutoff, double high_cutoff, double fs, int Nch, string window)
+FirWin::FirWin(int numtaps, double low_cutoff, double high_cutoff, double fs, int Nch, std::string window)
 {
-
-
-
-
     h.resize(numtaps);
     double low = low_cutoff / fs;
     double high = high_cutoff / fs;
@@ -53,12 +38,6 @@ FirWin::FirWin(int numtaps, double low_cutoff, double high_cutoff, double fs, in
     for (int i = 0; i <= n; i++) {
         h[i] *= w[i];
     }
-
-
-
-
-
-
 
     // INIT FILTERING UTILS, BUFFER
     buf.resize(Nch);
