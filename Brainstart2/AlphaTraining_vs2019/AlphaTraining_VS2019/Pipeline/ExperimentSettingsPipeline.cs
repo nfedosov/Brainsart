@@ -31,12 +31,7 @@ namespace AlphaTraining.Pipeline
 
 
             //Костыль, сделать, чтобы можно было много раз запускать и записывать в новые файлы по номерам
-
-            _toSaveFileName = argument.Replace("config_","probe_");
-            _toSaveFileName = _toSaveFileName.Replace(".txt", ".fif");
-
-
-
+            _toSaveFileName = argument.Replace("config_","probe_").Replace(".txt", ".fif");
 
 
             // Определить, какой тип визуализации был выбран
@@ -52,7 +47,13 @@ namespace AlphaTraining.Pipeline
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = @".\Data\utils\Brainstart2.exe";
-            startInfo.Arguments = argument + " " + _toSaveFileName + " " + _mainWindow.GetUserName() + " " + gamePath;
+            startInfo.Arguments = String.Format("-c \"{0}\" -o \"{1}\" -u \"{2}\" -l \"{3}\"",
+                _configFileName,
+                _toSaveFileName,
+                _mainWindow.GetUserName(),
+                _mainWindow.GetLslStreamName()
+                ) ;
+
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             var process = Process.Start(startInfo);
@@ -61,7 +62,7 @@ namespace AlphaTraining.Pipeline
                 process.WaitForExit();
             }
 
-            // TODO запустить скрипт пост-анализа
+            // TODO запустить приложение с визуализацией
 
             return false;
             

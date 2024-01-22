@@ -210,6 +210,11 @@
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <GroupBox Header="Поток данных" Margin="0, 0, 0, 5" FontSize="16">
+                                    <ComboBox Name="cbLslStreams">
+                                        
+                                    </ComboBox>
+                                </GroupBox>
                                 <GroupBox Header="Режим тренинга" Margin="0, 0, 0, 5" FontSize="16">
                                     <StackPanel Orientation="Vertical">
                                         <RadioButton Name="rbPenguin" IsChecked="True" GroupName="Games">Концентрация</RadioButton>
@@ -223,7 +228,7 @@
                                     </StackPanel>
                                 </GroupBox>
                             </StackPanel>
-                            <Image Grid.Column="1" Source="{StaticResource PenguinDemo}"></Image>
+                            <Image Grid.Column="1" Source="{StaticResource PenguinDemo}" MaxHeight="300" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10, 10, 0, 0"></Image>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>

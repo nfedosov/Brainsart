@@ -24,6 +24,7 @@ namespace AlphaTraining
         List<PipelineItem> _steps;
         List<String> _scenarios = new List<String>();
         List<PlotView> _plots = new List<PlotView>();
+        List<String> _lslStreams = new List<string>();
 
         private int _step = 0;
         public MainWindow()
@@ -42,38 +43,17 @@ namespace AlphaTraining
             lbStepsProgress.SelectedIndex = _step;
             lblStepName.Content = _steps[_step].Name;
 
-            PrepareScenarios();
-        }
-
-        internal Visualization GetSelectedGameName()
-        {
-            if(rbPenguin.IsChecked.Value)
-            {
-                return Visualization.Penguin;
-            }
-            else if (rbFontain.IsChecked.Value)
-            {
-                return Visualization.Fontain;
-            }
-
-            return Visualization.None;
-        }
-
-        private string EncloseWithQuotes(string filename)
-        {
-            if (filename.StartsWith("\""))
-            {
-                return filename;
-            }
-
-            return "\"" + filename + "\"";
+            UpdateTab();
 
         }
+
+        #region MainLogic
 
         public bool JumpToStep(int step)
         {
             bool jumpToNextStep = false;
 
+            // Проверить валидность заполенных полей формы, прежде чем переходить к следующему шагу
             if (false == _steps[_step].CanMoveForward())
             {
                 return false;
@@ -86,24 +66,24 @@ namespace AlphaTraining
                     jumpToNextStep = _steps[_step].Run("");
                 }
                 else
-                {                   
-                   if (step == (_steps.Count - 1))
-                   {
-                       btnNextStep.Content = "Старт!";
-                   }
-                   else
-                   {
-                       btnNextStep.Content = "Далее";
-                   }
+                {
+                    if (step == (_steps.Count - 1))
+                    {
+                        btnNextStep.Content = "Старт!";
+                    }
+                    else
+                    {
+                        btnNextStep.Content = "Далее";
+                    }
 
-                   jumpToNextStep = _steps[_step].Run(_steps[_step - 1].GetArguments());
+                    jumpToNextStep = _steps[_step].Run(_steps[_step - 1].GetArguments());
                 }
 
                 _step = step;
                 lbStepsProgress.SelectedIndex = _step;
                 lbStepsProgress.Items.Refresh();
+                UpdateTab();
 
-                
             }
 
             if (_step < _steps.Count)
@@ -112,7 +92,7 @@ namespace AlphaTraining
             }
             else
             {
-                Close();          
+                Close();
             }
 
             return jumpToNextStep;
@@ -123,21 +103,6 @@ namespace AlphaTraining
             _step = lbStepsProgress.SelectedIndex;
             lblStepName.Content = _steps[_step].Name;
             tabMain.SelectedIndex = _step;
-        }
-
-        private void PrepareScenarios()
-        {
-            lbScenarios.Items.Clear();
-            _scenarios.Clear();
-
-            if (Directory.Exists(@"./Data/scenarios"))
-            {
-                foreach (var filename in Directory.GetFiles(@"./Data/scenarios"))
-                {
-                    _scenarios.Add(Path.GetFileNameWithoutExtension(filename));
-                    lbScenarios.Items.Add(Path.GetFileNameWithoutExtension(filename));
-                }
-            }
         }
 
         private void NextStep_Click(object sender, RoutedEventArgs e)
@@ -153,24 +118,19 @@ namespace AlphaTraining
             }
         }
 
-        private void btnNewScenario_Click(object sender, RoutedEventArgs e)
+        private void UpdateTab()
         {
-            ScenarioMaker scenarioMaker = new ScenarioMaker();
-            scenarioMaker.ShowDialog();
+            switch (tabMain.SelectedIndex)
+            {
+                case 0:
+                    PrepareScenarios();
+                    break;
 
-            PrepareScenarios();
+                case 3:
+                    UbpdateSessionStartTab();
+                    break;
+            }
         }
-
-        private void btnDeleteScenario_Click(object sender, RoutedEventArgs e)
-        {
-            // Вывести окно "Вы уверены, что хотите удалить сценарий?"
-
-            // Удалить файл
-        }
-
-        //================================================================================
-        // Открытые функции
-        //================================================================================
 
         public void SetUserCard(UserCard userCard)
         {
@@ -190,6 +150,40 @@ namespace AlphaTraining
             return _sessionDate;
         }
 
+        #endregion
+
+        #region ProtocolsTab
+
+        private void PrepareScenarios()
+        {
+            lbScenarios.Items.Clear();
+            _scenarios.Clear();
+
+            if (Directory.Exists(@"./Data/scenarios"))
+            {
+                foreach (var filename in Directory.GetFiles(@"./Data/scenarios"))
+                {
+                    _scenarios.Add(Path.GetFileNameWithoutExtension(filename));
+                    lbScenarios.Items.Add(Path.GetFileNameWithoutExtension(filename));
+                }
+            }
+        }
+
+        private void btnNewScenario_Click(object sender, RoutedEventArgs e)
+        {
+            ScenarioMaker scenarioMaker = new ScenarioMaker();
+            scenarioMaker.ShowDialog();
+
+            PrepareScenarios();
+        }
+
+        private void btnDeleteScenario_Click(object sender, RoutedEventArgs e)
+        {
+            // Вывести окно "Вы уверены, что хотите удалить сценарий?"
+
+            // Удалить файл
+        }
+
         public string GetSelectedProtocolName()
         {
             if ((lbScenarios.Items.Count > 0) && (lbScenarios.SelectedItem != null))
@@ -198,15 +192,6 @@ namespace AlphaTraining
             }
 
             return String.Empty;
-        }
-
-        public void DisplayProtocolBlock(string text, double duration)
-        {
-            tabMain.SelectedIndex = 1;
-
-            tbProtocolScreen.Text = text;
-
-            Thread.Sleep(Convert.ToInt32(duration * 1000));
         }
 
         private void lbScenarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -227,8 +212,6 @@ namespace AlphaTraining
                             blocksDescriptors.Add(new ProtocolBlockDescriptor(block));
                         }
 
-
-
                         lbProtocolDetails.ItemsSource = blocksDescriptors;
                         lbProtocolDetails.Items.Refresh();
                     }
@@ -240,7 +223,15 @@ namespace AlphaTraining
         {
 
         }
-               
+
+        #endregion
+
+        #region CalibrationTab
+
+
+        #endregion
+
+        #region FiltersSetupTab
 
         public void LoadPlots()
         {
@@ -252,7 +243,7 @@ namespace AlphaTraining
             lbPlots.ItemsSource = _plots;
 
             cbTemporalFilterType.Items.Add("CFIR");
-          
+
         }
 
         private void UpdatePlotsView()
@@ -287,9 +278,9 @@ namespace AlphaTraining
 
         public int GetSelectedPlot()
         {
-            for(int i = 0; i < _plots.Count; i++)
+            for (int i = 0; i < _plots.Count; i++)
             {
-                if(_plots[i].IsSelected)
+                if (_plots[i].IsSelected)
                 {
                     return i;
                 }
@@ -330,7 +321,7 @@ namespace AlphaTraining
 
         public string GetCentralFrequencyValue()
         {
-            if(cbAutoCentralFreq.IsChecked.Value)
+            if (cbAutoCentralFreq.IsChecked.Value)
             {
                 return "auto_" + cbRythmType.SelectedValue.ToString();
             }
@@ -378,5 +369,68 @@ namespace AlphaTraining
         {
 
         }
+
+        #endregion
+
+        #region SessionStartTab
+
+        private void UbpdateSessionStartTab()
+        {
+            UpdateLslStreamsList();
+        }
+
+        private void UpdateLslStreamsList()
+        {
+            _lslStreams.Clear();
+            cbLslStreams.Items.Clear();
+
+            int nLslStreamMaxName = 256;
+            StringBuilder sbLslStreamName = new StringBuilder(nLslStreamMaxName);
+
+            bool result = NativeMethods.LslNativeFunctions.GetFirstLslStream((uint)nLslStreamMaxName, sbLslStreamName);
+            while(result)
+            {
+                _lslStreams.Add(sbLslStreamName.ToString());
+                cbLslStreams.Items.Add(sbLslStreamName.ToString());
+
+                result = NativeMethods.LslNativeFunctions.GetNextLslStream((uint)nLslStreamMaxName, sbLslStreamName);
+            }
+
+            for(int i = 0; i < _lslStreams.Count; i++)
+            {
+                if(_lslStreams[i].Contains("Data"))
+                {
+                    cbLslStreams.SelectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        internal Visualization GetSelectedGameName()
+        {
+            if (rbPenguin.IsChecked.Value)
+            {
+                return Visualization.Penguin;
+            }
+            else if (rbFontain.IsChecked.Value)
+            {
+                return Visualization.Fontain;
+            }
+
+            return Visualization.None;
+        }
+
+        public string GetLslStreamName()
+        {
+            if( -1 != cbLslStreams.SelectedIndex)
+            {
+                return _lslStreams[cbLslStreams.SelectedIndex];
+            }
+
+            return string.Empty;
+        }
+
+        #endregion
+
     }
 }
