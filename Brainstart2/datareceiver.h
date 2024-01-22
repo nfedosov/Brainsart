@@ -9,15 +9,11 @@ using namespace lsl;
 class DataReceiver: public QObject
 {
 public:
-    DataReceiver(IDataProcessor*, QObject *parent = nullptr);
-
-    std::vector<stream_info> results;
+    DataReceiver(std::vector<double> values, stream_info lslStreamInfo, QObject *parent = nullptr);
 
     void fakeDataReceive();
-    int resolve_and_print_streams(QListWidget* streamList);
-    void lslDataReceive();
-    void memStreamInfo();
 
+    void lslDataReceive();
 
     int stream_idx = 0;
     //stream_info* info;

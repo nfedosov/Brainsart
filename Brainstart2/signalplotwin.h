@@ -4,28 +4,49 @@
 
 #include "../QCustomPlot/qcustomplot.h"
 
-class SignalPlotWin : public QWidget
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
+
+struct ApplicationConfiguration
+{
+    uint numberOfChannes;
+
+    int filterType;
+
+    std::string fileToSave;
+
+    std::string userName;
+
+    stream_info lslStreamInfo;
+
+    std::vector<double> values;
+
+};
+
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit SignalPlotWin(uint Nch, DataReceiver*, std::string fileToSave, QWidget *parent = nullptr);
+    
+    MainWindow(QWidget* parent = nullptr);
+
+    void Init(ApplicationConfiguration* pConfig);
+
+
+    ApplicationConfiguration* configuration;
 
     QCustomPlot* plot;
-    QCustomPlot** plots_processed;
+    QCustomPlot* plots_processed[3];
     QCPItemLine *verticalLine;
-
-    DataReceiver* datareceiver;
-
     SaveData* savedata;
-
-
-    std::string fileSaveDir;
-
     FirWin* firwin_bp;
-
 
     QLineEdit *low_cut_edit;
     QLineEdit *high_cut_edit;
+
+
+    DataReceiver* datareceiver;
 
 
     QCPItemText** chNames;
@@ -39,9 +60,7 @@ public:
 
     const uint MAXSECWIN = 50;
     const uint MINSECWIN = 1;
-    //uint cumwinsamples;
-    uint Nch;
-    int srate;
+
     QTimer timer;
     //uint samplesfromstart = 0;
     //uint samplesinwin;
@@ -94,7 +113,7 @@ public:
     QVector<double> phasedata;
 
 
-
+    Ui::MainWindow* ui;
 
 signals:
 
@@ -125,9 +144,6 @@ private:
     QToolButton *zoomOutButton;
     QToolButton *zoomLeftButton;
     QToolButton *zoomRightButton;
-
-
-    void LaunchPenguin();
 };
 
 #endif // SIGNALPLOTWIN_H

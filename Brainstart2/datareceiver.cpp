@@ -1,77 +1,85 @@
 #include "stdafx.h"
 
 
-DataReceiver::DataReceiver(IDataProcessor *dataproc_obj, QObject *parent)
+DataReceiver::DataReceiver(std::vector<double> values, stream_info lslStreamInfo, QObject *parent)
     : QObject{parent}
 {
-    //do there choicing
+    int filterType = (int)values[1];
 
+    Nch = values[0];
+    spat_filter.resize(Nch);
 
-    dataprocessor = dataproc_obj;
- //   if (1)//...?
-  //  {
-  //      dataprocessor = new WhiteKF();
-  //  }
-  //  else
-  //  {
-   //     dataprocessor = new CFIR(100, 8.0, 12.0, 500.0,"hamming");//new WhiteKF();
+    inlet = new stream_inlet(lslStreamInfo);
 
- //   }
-//
+    srate = inlet->info().nominal_srate();
 
-
-    //lsl::stream_inlet inlet(lsl::stream_info("my_stream_name", "my_stream_type", 1), 0, true);
-
-
-}
-
-
-int DataReceiver::resolve_and_print_streams(QListWidget* streamList)
-{
-
-    results = resolve_streams();
-    streamList->clear();
-    qInfo()<< "Found " << results.size() << " streams:";
-      for (auto& result : results) {
-
-        streamList->addItem(QString::fromStdString(result.name()) + " (" + QString::fromStdString(result.type()) + ")");
-        qInfo()<< QString::fromStdString(result.name()) << " (" << QString::fromStdString(result.type()) << ")";
-    }
-
-
-
-
-
-    //lsl_streaminfo info; /* the streaminfo returned by the resolve call */
-    //    /* resolve the stream of interest (result array: info, array capacity: 1 element, type shall be
-     //    * EEG, resolve at least 1 stream, wait forever if necessary) */
-    //printf("Now waiting for an EEG stream...\n");
-    //lsl_resolve_byprop(&info, 5, "type", "BCI", 1, 5000.0);
-    //qInfo()<<info;
-
-
-    return 0;
-}
-
-
-
-
-void DataReceiver::memStreamInfo()
-{
-    inlet = new stream_inlet(results[stream_idx]);//new stream_inlet(*info, maxbufsamples, 0, 1);
-    //info = inlet->info();
-    //const char* label = info.desc().first_child().first_child().child_value("label");
-    //info = new stream_info(results[stream_idx].name(), results[stream_idx].type(), results[stream_idx].channel_count());
-    //info->desc() = results[stream_idx].desc();
-    srate =inlet->info().nominal_srate();
-    qDebug()<<srate;
-
-
-    maxbufsamples = ((unsigned int)srate)*maxbufsec;
+    maxbufsamples = ((unsigned int)srate) * maxbufsec;
 
     envelopebuffer.resize(maxbufsamples);
     phasebuffer.resize(maxbufsamples);
     processedbuffer.resize(maxbufsamples);
+    databuffer.resize(Nch);
+
+    for (uint i = 0; i < Nch; i++) 
+    {        
+        databuffer[i].resize(maxbufsamples);
+        databuffer[i].fill(0.0);
+    }
+
+    switch (filterType)
+    {
+    case 0:
+    {
+        WhiteKF* dataproc_kf = new WhiteKF();
+
+        to_prefilter = values[2];
+
+        dataproc_kf->freq = values[3];
+
+        q0 = values[4];
+        q1 = values[5];
+
+        dataproc_kf->q = values[6];
+        dataproc_kf->r = values[7];
+
+        for (int k = 9; k < values.size(); k++)
+        {
+            spat_filter[k - 9] = values[k];
+        }
+
+        dataproc_kf->srate = srate;
+        dataproc_kf->init_params();
+
+        dataprocessor = dataproc_kf;
+    }
+    break;
+
+    case 1:
+    {
+        CFIR* dataproc_cfir = new CFIR();
+
+        to_prefilter = values[2];
+
+        dataproc_cfir->freq = values[3];
+
+        q0 = values[4];
+        q1 = values[5];
+
+        dataproc_cfir->Ntaps = values[6];
+
+        for (int k = 8; k < values.size(); k++)
+        {
+            spat_filter[k - 8] = values[k];
+        }
+
+        dataproc_cfir->fs = srate;
+        dataproc_cfir->init_params();
+
+        dataprocessor = dataproc_cfir;
+    }
+    break;
+    }
+
 
 }
 
