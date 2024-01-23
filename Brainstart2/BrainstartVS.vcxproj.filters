@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="cfir.cpp" />
+    <ClCompile Include="datareceiver.cpp" />
+    <ClCompile Include="feedbackwin.cpp" />
+    <ClCompile Include="firwin.cpp" />
+    <ClCompile Include="ica.cpp" />
+    <ClCompile Include="idataprocessor.cpp" />
+    <ClCompile Include="kalmanparamchoice.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="qcustomplot.cpp" />
+    <ClCompile Include="savedata.cpp" />
+    <ClCompile Include="signalplotwin.cpp" />
+    <ClCompile Include="signaltoolbox.cpp" />
+    <ClCompile Include="simplebarfbwin.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="whitekf.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cfir.h" />
+    <ClInclude Include="datareceiver.h" />
+    <ClInclude Include="feedbackwin.h" />
+    <ClInclude Include="firwin.h" />
+    <ClInclude Include="ica.h" />
+    <ClInclude Include="idataprocessor.h" />
+    <ClInclude Include="kalmanparamchoice.h" />
+    <ClInclude Include="mainwindow.h" />
+    <ClInclude Include="qcustomplot.h" />
+    <ClInclude Include="savedata.h" />
+    <ClInclude Include="signalplotwin.h" />
+    <ClInclude Include="signaltoolbox.h" />
+    <ClInclude Include="simplebarfbwin.h" />
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="whitekf.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="GPL.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lsl_inlet.py" />
+    <None Include="mainwindow.ui" />
+    <None Include="stream_simulation.py" />
+  </ItemGroup>
+</Project>
