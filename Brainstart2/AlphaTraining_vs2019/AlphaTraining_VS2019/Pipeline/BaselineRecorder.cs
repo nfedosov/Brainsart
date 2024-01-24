@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using System.Windows;
 
 namespace AlphaTraining
 {
@@ -19,6 +20,11 @@ namespace AlphaTraining
 
         public override bool CanMoveForward()
         {
+            if(false == _mainWindow.DiscoverLslStreams())
+            {
+                MessageBox.Show("Не найден ни один lsl-поток!");
+                return false;
+            }
             return true;
         }
 

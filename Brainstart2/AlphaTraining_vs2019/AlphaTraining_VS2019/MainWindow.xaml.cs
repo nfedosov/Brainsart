@@ -430,6 +430,13 @@ namespace AlphaTraining
             return string.Empty;
         }
 
+        public bool DiscoverLslStreams()
+        {
+            UpdateLslStreamsList();
+
+            return (_lslStreams.Count != 0);
+        }
+
         #endregion
 
     }

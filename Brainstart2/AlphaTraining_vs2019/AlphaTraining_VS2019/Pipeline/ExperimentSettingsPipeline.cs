@@ -57,12 +57,19 @@ namespace AlphaTraining.Pipeline
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             var process = Process.Start(startInfo);
+            
+            // запустить приложение с визуализацией
+            startInfo = new ProcessStartInfo();
+            startInfo.FileName = gamePath;
+            startInfo.Arguments = String.Empty;
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+            var PenguinProcess = Process.Start(startInfo);
             if (null != process)
             {
                 process.WaitForExit();
             }
 
-            // TODO запустить приложение с визуализацией
 
             return false;
             
