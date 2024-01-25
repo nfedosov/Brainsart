@@ -27,17 +27,26 @@ namespace AlphaTraining
         public BaselineRecording()
         {
             InitializeComponent();
+
         }
 
        private void UpdateInstruction(object obj)
         {
             ProtocolBlock protocolBlock = obj as ProtocolBlock;
 
-            Dispatcher.Invoke((Action)delegate () 
+            Dispatcher.Invoke((Action)delegate ()
             {
-                SystemSounds.Asterisk.Play();
+                Beep();
                 tbScreen.Content = protocolBlock.message;
             });
+        }
+
+        private static void Beep()
+        {
+            MediaPlayer snd = new MediaPlayer();
+            snd.Open(new Uri(".//Beep.wav", UriKind.Relative));
+            snd.Volume = 0.5;
+            snd.Play();
         }
 
         private void FinalizeRecording(object obj)
@@ -47,7 +56,7 @@ namespace AlphaTraining
             Dispatcher.Invoke((Action)delegate ()
             {
                 tbScreen.Content = "Калибровка закончена!";
-                SystemSounds.Asterisk.Play();
+                Beep();
                 WindowStyle = WindowStyle.SingleBorderWindow;
             });
         }
