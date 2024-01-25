@@ -234,8 +234,9 @@ namespace AlphaTraining
         #region FiltersSetupTab
 
         public void LoadPlots()
-        {
-            for (int i = 0; i < 4; i++)
+        { 
+            int fileCount = Directory.GetFiles(Path.GetFullPath(string.Format(".\\Data\\temp\\")), "*Timeseries*", SearchOption.TopDirectoryOnly).Length;
+            for (int i = 0; i < fileCount; i++)
             {
                 _plots.Add(new PlotView(i));
             }
