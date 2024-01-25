@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 
 namespace AlphaTraining
@@ -34,10 +35,14 @@ namespace AlphaTraining
                 MessageBox.Show("Не найден интерпретатор Python!");
                 return;
             }
-                        
-            
 
-            AlphaTrainingAction currentAction = AlphaTrainingAction.OptionSelection;
+            foreach (var filename in Directory.GetFiles(@"./Data/temp"))
+            {
+                File.Delete(filename);
+            }
+
+
+                AlphaTrainingAction currentAction = AlphaTrainingAction.OptionSelection;
             UserCard userCard = null;
             
             do
